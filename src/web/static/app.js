@@ -1,4 +1,4 @@
-const PAIR = "btc_idr";
+let currentPair = "btc_idr";
 let currentTimeframe = "1h";
 
 let chart = null;
@@ -10,6 +10,29 @@ let cutLossPriceLine = null;
 
 let currentCandles = [];
 let currentEvaluation = null;
+
+function isUsdt() {
+    return currentPair.toLowerCase().includes("usdt");
+}
+
+function formatPrice(price) {
+    const p = parseFloat(price) || 0;
+    if (isUsdt()) {
+        return `$ ${p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+    return `Rp ${parseInt(p).toLocaleString('id-ID')}`;
+}
+
+function formatVolume(vol) {
+    const v = parseFloat(vol) || 0;
+    if (isUsdt()) {
+        if (v >= 1e6) return `$ ${(v / 1e6).toFixed(2)}M`;
+        if (v >= 1e3) return `$ ${(v / 1e3).toFixed(2)}K`;
+        return `$ ${v.toFixed(2)}`;
+    }
+    const volMiliar = (v / 1e9).toFixed(2);
+    return `Rp ${volMiliar} Miliar`;
+}
 
 document.addEventListener("DOMContentLoaded", () => {
     initChart();
@@ -71,7 +94,7 @@ function initChart() {
         wickDownColor: '#EF5350',
         priceFormat: {
             type: 'custom',
-            formatter: (price) => 'Rp ' + parseInt(price).toLocaleString(),
+            formatter: (price) => formatPrice(price),
         },
     });
 
@@ -103,6 +126,30 @@ function setupEventListeners() {
         btnSync.addEventListener("click", () => loadAllData());
     }
 
+    // Currency pair switcher (BTC/IDR vs BTC/USDT)
+    document.querySelectorAll(".pair-btn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            const newPair = e.currentTarget.dataset.pair;
+            if (newPair === currentPair) return;
+
+            document.querySelectorAll(".pair-btn").forEach(b => b.classList.remove("active"));
+            e.currentTarget.classList.add("active");
+            currentPair = newPair;
+
+            if (candleSeries) {
+                candleSeries.applyOptions({
+                    priceFormat: {
+                        type: 'custom',
+                        formatter: (price) => formatPrice(price),
+                    }
+                });
+            }
+
+            loadAllData();
+        });
+    });
+
+    // Timeframe switcher
     document.querySelectorAll(".tf-item, .tf-btn").forEach(btn => {
         btn.addEventListener("click", (e) => {
             document.querySelectorAll(".tf-item, .tf-btn").forEach(b => b.classList.remove("active"));
@@ -122,7 +169,7 @@ async function loadAllData() {
 
 async function fetchTicker() {
     try {
-        const res = await fetch(`/api/ticker?pair=${PAIR}`);
+        const res = await fetch(`/api/ticker?pair=${currentPair}`);
         if (!res.ok) return;
         const data = await res.json();
         renderTicker(data);
@@ -138,20 +185,20 @@ function renderTicker(t) {
     const topLow = document.getElementById("topLow");
     const topVol = document.getElementById("topVolIdr");
 
-    if (topLast) topLast.textContent = `Rp ${parseInt(t.last).toLocaleString()}`;
-    if (topHigh) topHigh.textContent = `Rp ${parseInt(t.high).toLocaleString()}`;
-    if (topLow) topLow.textContent = `Rp ${parseInt(t.low).toLocaleString()}`;
+    if (topLast) topLast.textContent = formatPrice(t.last);
+    if (topHigh) topHigh.textContent = formatPrice(t.high);
+    if (topLow) topLow.textContent = formatPrice(t.low);
     if (topVol) {
-        const volMiliar = (t.vol_idr / 1e9).toFixed(2);
-        topVol.textContent = `Rp ${volMiliar} Miliar`;
+        const volVal = isUsdt() ? (t.vol_usdt || t.vol_base * t.last) : t.vol_idr;
+        topVol.textContent = formatVolume(volVal);
     }
 }
 
 async function loadKlinesAndEvaluation() {
     try {
         const [klinesRes, evalRes] = await Promise.all([
-            fetch(`/api/klines?pair=${PAIR}&timeframe=${currentTimeframe}&limit=1500`),
-            fetch(`/api/evaluate?pair=${PAIR}&timeframe=${currentTimeframe}`)
+            fetch(`/api/klines?pair=${currentPair}&timeframe=${currentTimeframe}&limit=1500`),
+            fetch(`/api/evaluate?pair=${currentPair}&timeframe=${currentTimeframe}`)
         ]);
 
         if (klinesRes.ok) {
@@ -273,10 +320,10 @@ function renderEvaluation(data) {
 
     if (data.risk_details) {
         const rd = data.risk_details;
-        if (poiEl) poiEl.textContent = `Rp ${parseInt(rd.poi || 0).toLocaleString()}`;
-        if (invEl) invEl.textContent = `Rp ${parseInt(rd.invalidation || 0).toLocaleString()} (-${rd.risk_pct || 0}%)`;
-        if (tp1El) tp1El.textContent = `Rp ${parseInt(rd.tp1_rr2 || 0).toLocaleString()}`;
-        if (tp2El) tp2El.textContent = `Rp ${parseInt(rd.tp2_rr3 || 0).toLocaleString()}`;
+        if (poiEl) poiEl.textContent = formatPrice(rd.poi);
+        if (invEl) invEl.textContent = `${formatPrice(rd.invalidation)} (-${rd.risk_pct || 0}%)`;
+        if (tp1El) tp1El.textContent = formatPrice(rd.tp1_rr2);
+        if (tp2El) tp2El.textContent = formatPrice(rd.tp2_rr3);
     }
 
     const sub = data.sub_scores || {};

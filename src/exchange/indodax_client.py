@@ -94,14 +94,14 @@ class IndodaxClient:
                         "sell": float(t.get("sell", 0)),
                         "vol_base": float(t.get(vol_base_key, t.get("vol_btc", 0))),
                         "vol_idr": float(t.get("vol_idr", 0)),
+                        "vol_usdt": float(t.get("vol_usdt", 0)),
                         "server_time": int(t.get("server_time", time.time())),
                         "source": "Indodax Real Live API"
                     }
         except Exception as e:
             logger.warning("Indodax live ticker fetch failed: %s", e)
 
-        # Fallback values only if network completely down
-        fallback_px = 1424000000.0
+        fallback_px = 81000.0 if "usdt" in pair.lower() else 1424000000.0
         return {
             "pair": pair,
             "last": fallback_px,
@@ -110,7 +110,8 @@ class IndodaxClient:
             "buy": fallback_px * 0.999,
             "sell": fallback_px * 1.001,
             "vol_base": 35.5,
-            "vol_idr": 35.5 * fallback_px,
+            "vol_idr": 0.0 if "usdt" in pair.lower() else 35.5 * fallback_px,
+            "vol_usdt": 35.5 * fallback_px if "usdt" in pair.lower() else 0.0,
             "server_time": int(time.time()),
             "source": "Cached Fallback"
         }

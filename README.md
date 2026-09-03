@@ -1,13 +1,14 @@
 # Bitcoin Quantitative Terminal & Trading Intelligence System
 
-Terminal analisis kuantitatif dan sistem intelijen pasar real-time untuk perdagangan Bitcoin (BTC/IDR) berbasis data langsung dari exchange Indodax. Sistem memadukan pembobotan konfluensi multi-faktor (40% Tren, 30% Level Kunci/SND, 30% Sentimen Makro), pembelajaran pola teknikal empiris (In-Context Pattern Learning), grafik interaktif TradingView Lightweight Charts, dan arsitektur pengaman Deadman Switch.
+Terminal analisis kuantitatif dan sistem intelijen pasar real-time untuk perdagangan Bitcoin (**BTC / IDR** & **BTC / USDT**) berbasis data langsung dari exchange Indodax. Sistem memadukan pembobotan konfluensi multi-faktor (40% Tren, 30% Level Kunci/SND, 30% Sentimen Makro), pembelajaran pola teknikal empiris (In-Context Pattern Learning), grafik interaktif TradingView Lightweight Charts, dan arsitektur pengaman Deadman Switch.
 
 ---
 
 ## Fitur Utama
 
-### 1. Umpan Data Pasar Riil Indodax
-- **Integrasi Langsung:** Terhubung langsung ke REST Ticker API dan TradingView History Engine resmi Indodax (`https://indodax.com/tradingview/history_v2`).
+### 1. Umpan Data Pasar Riil Indodax & Dual Currency Support
+- **Dukungan Pasangan Mata Uang:** Terhubung langsung ke REST Ticker API dan TradingView History Engine resmi Indodax untuk pasangan **BTC / IDR** dan **BTC / USDT**.
+- **Switcher Mata Uang Instan:** Header terminal dilengkapi tombol switcher interaktif untuk beralih instan antara denominasi Rupiah (IDR) dan Dollar (USDT) dengan konversi otomatis pada chart, skala harga, dan level strategis.
 - **Cakupan Historis Lengkap:** Menarik data historis maksimal di setiap timeframe:
   - Timeframe 15 Menit (15m): ~1.340 bar (riwayat 14 hari penuh).
   - Timeframe 1 Jam (1h): ~1.440 bar (riwayat 60 hari penuh).
@@ -27,7 +28,6 @@ Terminal analisis kuantitatif dan sistem intelijen pasar real-time untuk perdaga
 - **Desain Terminal Institusional:** Menggunakan palet Graphite Dark (`#0A0A0C`), panel (`#121316`), dan garis pembatas hairline (`#232428`).
 - **Tipografi Sentence Case:** Menggunakan font IBM Plex Sans untuk teks UI/label dan IBM Plex Mono tabular-nums untuk angka harga dan metrik kuantitatif. Bebas dari gaya ALL CAPS.
 - **Grafik TradingView Bersih:** Menggunakan TradingView Lightweight Charts v4.1.1 lokal. Indikator kurva EMA 18 dan EMA 50 terplot rapi tanpa menutupi atau menumpuk angka pada sumbu harga kanan.
-- **Tombol Aksi Terstandar:** Tombol aksi dengan status normal hitam berbingkai putih dan teks putih, yang secara otomatis membalik warna (inversi) saat kursor diarahkan (hover).
 
 ### 5. Mekanisme Pengaman (Deadman Switch & Paper Trading)
 - **Deadman Switch:** Daemon monitor heartbeat (default timeout 30 detik) yang secara otomatis membatalkan seluruh order terbuka jika koneksi atau aplikasi terputus.
@@ -70,10 +70,18 @@ Sesuaikan parameter di file `.env`. Untuk mode analisis, autentikasi hanya membu
 INDODAX_API_KEY=12300
 INDODAX_SECRET_KEY=
 LIVE_TRADING=false
-ENABLE_DEADMAN_SWITCH=true
+WEIGHT_TREND=0.40
+WEIGHT_SND=0.30
+WEIGHT_MACRO=0.30
+MIN_CONFLUENCE_BUY_SCORE=70.0
+MIN_CONFLUENCE_SELL_SCORE=70.0
+MAX_RISK_PER_TRADE_PERCENT=2.0
+MIN_RISK_REWARD_RATIO=2.0
 DEADMAN_TIMEOUT_SEC=30
+ENABLE_DEADMAN_SWITCH=true
 APP_HOST=127.0.0.1
 APP_PORT=8000
+DEBUG=false
 ```
 
 ### 4. Menjalankan Web Dashboard Terminal
@@ -90,8 +98,11 @@ Buka peramban (browser) di alamat:
 Jalankan evaluasi analitis satu kali tanpa membuka browser:
 
 ```bash
-# Evaluasi Bitcoin 1 Jam
+# Evaluasi Bitcoin / Rupiah 1 Jam
 python main.py --eval --pair btc_idr --timeframe 1h
+
+# Evaluasi Bitcoin / USDT 1 Jam
+python main.py --eval --pair btc_usdt --timeframe 1h
 
 # Evaluasi Timeframe 15 Menit
 python main.py --eval --pair btc_idr --timeframe 15m
@@ -137,59 +148,6 @@ Audit akurasi empiris dihasilkan langsung oleh modul evaluasi pola teknikal (`In
   - Status: Sistem secara otomatis menetapkan status **Netral (Konsolidasi)** dan menolak eksekusi setup untuk melindungi modal trader dari sideways whipsaw.
 
 ---
-
-<!-- ## Struktur Direktori Proyek
-
-```text
-TRADING/
-│
-├── .env                       # File konfigurasi lokal & API credentials
-├── .env.example               # Contoh template konfigurasi
-├── .gitignore                 # Filter tracking Git standar industri
-├── main.py                    # Titik masuk utama (Server, CLI, dan Evaluasi)
-├── README.md                  # Dokumentasi teknis & panduan sistem
-├── requirements.txt           # Daftar dependensi Python
-│
-├── data/                      # Penyimpanan data lokal
-│   ├── historical/            # Sample data harga historis (CSV)
-│   └── memory/                # Jurnal makro dan memori In-Context
-│
-├── src/
-│   ├── core/                  # Komponen fondasi sistem
-│   │   ├── config.py          # Pengaturan pydantic-settings
-│   │   ├── deadman_switch.py  # Sistem pengaman fail-safe heartbeat
-│   │   └── logger.py          # Formatter laporan evaluasi
-│   │
-│   ├── engine/                # Logika analitis kuantitatif
-│   │   ├── technical_analyzer.py # EMA 18/50/200, BOS, RSI, MACD
-│   │   ├── snd_analyzer.py       # Supply, Demand, POI, Invalidasi
-│   │   ├── macro_analyzer.py     # Crypto Fear & Greed Index
-│   │   ├── confluence_engine.py  # Mesin pembobotan 40-30-30
-│   │   ├── risk_manager.py       # Kalkulasi target R:R 1:2 & 1:3
-│   │   └── evaluator.py          # Koordinator evaluasi pasar
-│   │
-│   ├── exchange/              # Modul integrasi pasar
-│   │   ├── indodax_client.py  # Klien REST API Indodax & TradingView feed
-│   │   ├── indodax_ws.py      # Klien WebSocket Indodax
-│   │   └── xauusd_client.py   # Klien data komoditas Emas
-│   │
-│   ├── memory/                # Pembelajaran In-Context
-│   │   └── in_context_memory.py  # Analisis statistik pola historis
-│   │
-│   └── web/                   # Antarmuka web & REST API
-│       ├── app.py             # Server FastAPI
-│       └── static/            # Asset frontend
-│           ├── index.html     # Struktur tampilan terminal
-│           ├── styles.css     # Styling tema Graphite Dark & IBM Plex
-│           ├── app.js         # Logika interaktivitas & chart updates
-│           └── lightweight-charts.js # Library TradingView v4.1.1
-│
-└── tests/                     # Unit test suite
-    ├── test_exchange_and_deadman.py
-    └── test_risk_and_evaluator.py
-```
-
---- -->
 
 ## Lisensi & Batasan Tanggung Jawab
 
