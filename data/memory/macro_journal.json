@@ -1,0 +1,62 @@
+[
+  {
+    "id": "JRN-001",
+    "market": "BTC/IDR",
+    "event_type": "Macro Liquidity Expansion",
+    "macro_context": "The Fed cuts interest rates by 50 bps, DXY drops below 101, global liquidity index surging.",
+    "market_structure": "Bullish Break of Structure (BOS) on 4H, retesting Daily Demand Zone",
+    "pattern": "Drop-Base-Rally at Order Block",
+    "outcome": "WIN",
+    "rr_achieved": 3.2,
+    "confidence_rating": 88,
+    "key_takeaway": "When Fed rate cuts align with Daily Demand zone retest, bullish continuation probability exceeds 80%."
+  },
+  {
+    "id": "JRN-002",
+    "market": "XAUUSD",
+    "event_type": "Geopolitical Escalation & CPI Beat",
+    "macro_context": "Middle East tensions escalate, Safe-haven flight activated, CPI slightly warm but real yields decline.",
+    "market_structure": "Strong Uptrend above 200 EMA, Liquidity sweep of prior week low",
+    "pattern": "Turtle Soup / Liquidity Sweep into 4H Demand",
+    "outcome": "WIN",
+    "rr_achieved": 2.8,
+    "confidence_rating": 92,
+    "key_takeaway": "Gold aggressively repels downside liquidity sweep during geopolitical conflict; high probability long at POI."
+  },
+  {
+    "id": "JRN-003",
+    "market": "BTC/IDR",
+    "event_type": "Hawkish Surprise / High CPI",
+    "macro_context": "US Core CPI exceeds estimates, Treasury yields spike, risk-off sentiment across equities and crypto.",
+    "market_structure": "Downtrend / Bearish CHoCH on 1H timeframe, rejection at Daily Supply Zone",
+    "pattern": "Rally-Base-Drop from FVG",
+    "outcome": "WIN",
+    "rr_achieved": 2.4,
+    "confidence_rating": 82,
+    "key_takeaway": "Avoid aggressive longs when CPI beats consensus; wait for Supply zone mitigation before shorting or stay cash."
+  },
+  {
+    "id": "JRN-004",
+    "market": "XAUUSD",
+    "event_type": "Consolidation before FOMC",
+    "macro_context": "Market awaits Fed Chair press conference, low volume, chop across assets.",
+    "market_structure": "Sideways / Range-bound between 2620 - 2660, RSI hovering at 50",
+    "pattern": "Range Equilibrium / Equal Highs & Lows",
+    "outcome": "SCRATCH",
+    "rr_achieved": 0.5,
+    "confidence_rating": 45,
+    "key_takeaway": "Sideways market with neutral macro has low confluence (<50%); invalidates directional trade entry."
+  },
+  {
+    "id": "JRN-005",
+    "market": "BTC/IDR",
+    "event_type": "Post-Halving Supply Shock",
+    "macro_context": "Exchange reserves drop to multi-year lows, spot ETF inflows positive for 12 consecutive days.",
+    "market_structure": "Uptrend, higher highs and higher lows, EMA 20 > EMA 50 > EMA 200",
+    "pattern": "Bull Flag breakout with high volume confirmation",
+    "outcome": "WIN",
+    "rr_achieved": 4.1,
+    "confidence_rating": 90,
+    "key_takeaway": "Trend structure with positive ETF net inflow produces sustained upward expansion."
+  }
+]

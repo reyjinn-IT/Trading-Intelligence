@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitcoin Quantitative Terminal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="/static/lightweight-charts.js"></script>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="brand-section">
+            <span class="pair-label">BTC / IDR</span>
+            <span class="feed-source">Indodax spot</span>
+        </div>
+
+        <div class="top-metrics-group">
+            <div class="metric-cell">
+                <span class="metric-caption">Harga terkini</span>
+                <span id="topLastPrice" class="metric-hero mono">Rp --</span>
+            </div>
+            <div class="metric-cell">
+                <span class="metric-caption">Tertinggi 24j</span>
+                <span id="topHigh" class="metric-figure mono">Rp --</span>
+            </div>
+            <div class="metric-cell">
+                <span class="metric-caption">Terendah 24j</span>
+                <span id="topLow" class="metric-figure mono">Rp --</span>
+            </div>
+            <div class="metric-cell">
+                <span class="metric-caption">Volume 24j</span>
+                <span id="topVolIdr" class="metric-figure mono">Rp --</span>
+            </div>
+            <button id="btnSync" class="btn-action">Perbarui analisis</button>
+        </div>
+    </header>
+
+    <main class="main-wrapper">
+        <div class="workspace-grid">
+            <section class="chart-section">
+                <div class="chart-header">
+                    <div class="tf-switcher">
+                        <button class="tf-item" data-tf="15m">15m</button>
+                        <button class="tf-item active" data-tf="1h">1h</button>
+                        <button class="tf-item" data-tf="4h">4h</button>
+                        <button class="tf-item" data-tf="1d">1d</button>
+                    </div>
+                    <div class="chart-legend-minimal">
+                        <span class="indicator-key"><span class="key-dot" style="background: var(--indicator-ema18);"></span>EMA 18</span>
+                        <span class="indicator-key"><span class="key-dot" style="background: var(--indicator-ema50);"></span>EMA 50</span>
+                    </div>
+                </div>
+                <div id="chartContainer"></div>
+            </section>
+
+            <aside class="sidebar-panel">
+                <div class="sidebar-section">
+                    <div class="section-label">Arah &amp; probabilitas</div>
+                    <div class="verdict-row">
+                        <div id="verdictDirection" class="verdict-signal neutral">Memproses...</div>
+                        <div class="verdict-probability mono">
+                            <span id="verdictScore">--%</span>
+                            <span class="verdict-probability-sub">probabilitas</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="section-label">Target &amp; batas risiko</div>
+                    <div class="levels-list">
+                        <div class="level-row">
+                            <span class="level-name">Point of Interest (POI)</span>
+                            <span id="valPoi" class="level-num mono">Rp --</span>
+                        </div>
+                        <div class="level-row">
+                            <span class="level-name">Batas invalidasi (Cut loss)</span>
+                            <span id="valInvalidation" class="level-num mono" style="color: var(--bear);">Rp --</span>
+                        </div>
+                        <div class="level-row">
+                            <span class="level-name">Target take profit 1 (1:2 R:R)</span>
+                            <span id="valTp1" class="level-num mono" style="color: var(--bull);">Rp --</span>
+                        </div>
+                        <div class="level-row">
+                            <span class="level-name">Target take profit 2 (1:3 R:R)</span>
+                            <span id="valTp2" class="level-num mono" style="color: var(--bull);">Rp --</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="section-label">Komposisi konfluensi</div>
+                    <div class="pillars-list">
+                        <div class="pillar-item">
+                            <div class="pillar-header">
+                                <span class="pillar-title">Tren &amp; struktur (40%)</span>
+                                <span id="scoreTrend" class="pillar-percent mono">--%</span>
+                            </div>
+                            <div class="subtle-track">
+                                <div id="barTrend" class="subtle-fill" style="width: 0%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="pillar-item">
+                            <div class="pillar-header">
+                                <span class="pillar-title">Level kunci &amp; SND (30%)</span>
+                                <span id="scoreSnd" class="pillar-percent mono">--%</span>
+                            </div>
+                            <div class="subtle-track">
+                                <div id="barSnd" class="subtle-fill" style="width: 0%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="pillar-item">
+                            <div class="pillar-header">
+                                <span class="pillar-title">Sentimen makro (30%)</span>
+                                <span id="scoreMacro" class="pillar-percent mono">--%</span>
+                            </div>
+                            <div class="subtle-track">
+                                <div id="barMacro" class="subtle-fill" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <section class="dossier-section">
+            <div class="dossier-heading">Ringkasan analisis pasar</div>
+            <div class="dossier-cols-grid">
+                <div class="dossier-col-item">
+                    <span class="col-header">Konteks historis</span>
+                    <p id="dossierMemory" class="col-narrative">Memuat korelasi pola historis...</p>
+                </div>
+                <div class="dossier-col-item">
+                    <span class="col-header">Struktur tren</span>
+                    <p id="dossierTech" class="col-narrative">Menganalisis pergerakan EMA dan struktur pasar...</p>
+                </div>
+                <div class="dossier-col-item">
+                    <span class="col-header">Sentimen &amp; makro</span>
+                    <p id="dossierMacro" class="col-narrative">Mengevaluasi sentimen pasar global...</p>
+                </div>
+                <div class="dossier-col-item">
+                    <span class="col-header">Probabilitas setup</span>
+                    <p id="dossierConfluence" class="col-narrative">Mengalkulasi pembobotan konfluensi...</p>
+                </div>
+                <div class="dossier-col-item">
+                    <span class="col-header">Batas eksekusi</span>
+                    <p id="dossierRisk" class="col-narrative">Menetapkan area pemantauan dan batas risiko...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
