@@ -1,4 +1,3 @@
-"""FastAPI Web Application & REST API for AI Expert Trading Assistant."""
 import os
 import time
 from pathlib import Path
@@ -25,17 +24,14 @@ app = FastAPI(
     description="AI Expert Trading Assistant Backend & Dashboard API"
 )
 
-
 # Mount static assets
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
-
 
 class TradeRequest(BaseModel):
     pair: str
     action: str
     price: float
     amount: float
-
 
 class JournalEntryRequest(BaseModel):
     market: str
@@ -48,13 +44,11 @@ class JournalEntryRequest(BaseModel):
     confidence_rating: int
     key_takeaway: str
 
-
 @app.on_event("startup")
 def startup_event():
     # Arm deadman switch automatically if enabled
     if settings.ENABLE_DEADMAN_SWITCH:
         deadman_switch.arm()
-
 
 @app.get("/", response_class=HTMLResponse)
 def index():
@@ -63,10 +57,8 @@ def index():
         return html_file.read_text(encoding="utf-8")
     return "<h1>AI Expert Trading Assistant API Active</h1><p>Visit /docs for API documentation.</p>"
 
-
 @app.get("/api/status")
 def get_system_status():
-    """Retrieve overall system status, deadman switch status, and portfolio info."""
     account_info = indodax_client.get_info()
     deadman_status = deadman_switch.get_status()
 
@@ -86,43 +78,33 @@ def get_system_status():
         }
     }
 
-
 @app.post("/api/deadman/heartbeat")
 def deadman_heartbeat():
-    """Receive keepalive heartbeat ping from client / operator."""
     deadman_switch.heartbeat()
     return {"success": True, "status": deadman_switch.get_status()}
 
-
 @app.post("/api/deadman/reset")
 def deadman_reset():
-    """Reset deadman switch if triggered."""
     deadman_switch.reset()
     return {"success": True, "message": "Deadman Switch reset and re-armed.", "status": deadman_switch.get_status()}
 
-
 @app.post("/api/deadman/toggle")
 def deadman_toggle(arm: bool = True):
-    """Arm or disarm the deadman switch."""
     if arm:
         deadman_switch.arm()
     else:
         deadman_switch.disarm()
     return {"success": True, "status": deadman_switch.get_status()}
 
-
 @app.get("/api/ticker")
 def get_ticker(pair: str = "btc_idr"):
-    """Get real-time ticker data."""
     pair_lower = pair.lower()
     if "xau" in pair_lower or "gold" in pair_lower:
         return xauusd_client.get_ticker()
     return indodax_client.get_ticker(pair_lower)
 
-
 @app.get("/api/klines")
 def get_klines(pair: str = "btc_idr", timeframe: str = "1h", limit: int = 1500):
-    """Get candlestick data enriched with exact mathematical indicators."""
     pair_lower = pair.lower()
     if "xau" in pair_lower or "gold" in pair_lower:
         candles = xauusd_client.get_klines(timeframe=timeframe, limit=limit)
@@ -140,10 +122,8 @@ def get_klines(pair: str = "btc_idr", timeframe: str = "1h", limit: int = 1500):
             return candles
     return candles
 
-
 @app.get("/api/depth")
 def get_depth(pair: str = "btc_idr"):
-    """Get real-time order book depth."""
     pair_lower = pair.lower()
     if "xau" in pair_lower or "gold" in pair_lower:
         ticker = xauusd_client.get_ticker()
@@ -154,10 +134,8 @@ def get_depth(pair: str = "btc_idr"):
         }
     return indodax_client.get_depth(pair_lower)
 
-
 @app.get("/api/trades")
 def get_trades(pair: str = "btc_idr"):
-    """Get recent trades tape."""
     pair_lower = pair.lower()
     if "xau" in pair_lower or "gold" in pair_lower:
         ticker = xauusd_client.get_ticker()
@@ -178,30 +156,21 @@ def get_trades(pair: str = "btc_idr"):
         ]
     return trades
 
-
 @app.get("/api/orders")
 def get_orders():
-    """Get all open and executed paper/live orders."""
     return {
         "open_orders": indodax_client.get_open_orders(),
         "recent_history": indodax_client.paper_orders[-15:] if hasattr(indodax_client, "paper_orders") else []
     }
 
-
 @app.get("/api/evaluate")
 def evaluate_market(pair: str = "btc_idr", timeframe: str = "1h"):
-    """
-    Run full Confluence + Memory + Technical + Macro + Risk evaluation.
-    Returns the PRD Mandatory 5-Point Evaluation Output.
-    """
     deadman_switch.heartbeat()
     eval_result = evaluator.evaluate_pair(pair=pair, timeframe=timeframe, print_report=True)
     return eval_result
 
-
 @app.post("/api/trade")
 def execute_trade(req: TradeRequest):
-    """Manually or semi-automatically place a trade."""
     deadman_switch.heartbeat()
     if "xau" in req.pair.lower():
         return {
@@ -217,33 +186,25 @@ def execute_trade(req: TradeRequest):
     )
     return res
 
-
 @app.get("/api/memory/journal")
 def get_journal():
-    """Fetch In-Context Learning macro & trade journals."""
     return in_context_memory.journal_entries
-
 
 @app.post("/api/memory/journal")
 def add_journal(entry: JournalEntryRequest):
-    """Add a new journal entry to In-Context Memory."""
     entry_dict = entry.model_dump()
     entry_dict["id"] = f"JRN-{len(in_context_memory.journal_entries) + 1:03d}"
     success = in_context_memory.add_journal_entry(entry_dict)
     return {"success": success, "entry": entry_dict}
 
-
 @app.post("/api/memory/upload-chart")
 async def upload_chart_image(file: UploadFile = File(...)):
-    """Upload chart image for In-Context computer vision analysis."""
     contents = await file.read()
     res = in_context_memory.analyze_chart_image(contents)
     return res
 
-
 @app.post("/api/memory/upload-csv")
 async def upload_csv_file(file: UploadFile = File(...)):
-    """Upload historical CSV dataset for In-Context Learning."""
     import io
     contents = await file.read()
     buffer = io.BytesIO(contents)

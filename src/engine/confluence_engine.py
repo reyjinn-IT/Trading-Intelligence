@@ -1,4 +1,3 @@
-"""Confluence Scoring Engine implementing strict 40% - 30% - 30% weighting."""
 import logging
 from typing import Dict, Any, List, Optional
 from src.core.config import settings
@@ -7,7 +6,6 @@ from src.engine.snd_analyzer import snd_analyzer
 from src.engine.macro_analyzer import macro_analyzer
 
 logger = logging.getLogger("ConfluenceEngine")
-
 
 class ConfluenceEngine:
     def __init__(
@@ -33,9 +31,6 @@ class ConfluenceEngine:
         candles: List[Dict[str, Any]],
         asset_type: str = "CRYPTO"
     ) -> Dict[str, Any]:
-        """
-        Compute total confluence score (0.0% to 100.0%) and detailed breakdown.
-        """
         # 1. 40% Trend & Market Structure
         tech_res = technical_analyzer.analyze(candles)
         trend_score = tech_res["score"]
@@ -85,6 +80,5 @@ class ConfluenceEngine:
             "snd": snd_res,
             "macro": macro_res
         }
-
 
 confluence_engine = ConfluenceEngine()

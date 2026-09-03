@@ -1,4 +1,3 @@
-"""Indodax WebSocket client for real-time market data streaming."""
 import asyncio
 import json
 import logging
@@ -10,7 +9,6 @@ from src.core.config import settings
 
 logger = logging.getLogger("IndodaxWebSocket")
 
-
 class IndodaxWSClient:
     def __init__(self, ws_url: Optional[str] = None):
         self.ws_url = ws_url or settings.INDODAX_WS_URL
@@ -21,11 +19,9 @@ class IndodaxWSClient:
         self._thread: Optional[threading.Thread] = None
 
     def add_listener(self, cb: Callable[[Dict[str, Any]], None]) -> None:
-        """Register a callback function to receive live messages."""
         self.callbacks.append(cb)
 
     def start(self) -> None:
-        """Start the WebSocket listener in a background daemon thread."""
         if self.running:
             return
         self.running = True
@@ -34,7 +30,6 @@ class IndodaxWSClient:
         logger.info("Indodax WebSocket client started.")
 
     def stop(self) -> None:
-        """Stop the WebSocket client."""
         self.running = False
         if self._loop and self._loop.is_running():
             self._loop.call_soon_threadsafe(self._loop.stop)
@@ -67,6 +62,5 @@ class IndodaxWSClient:
                 logger.debug("WebSocket connection dropped or unavailable (%s). Retrying in 5s...", e)
                 # Fallback heartbeat so system remains responsive
                 await asyncio.sleep(5)
-
 
 indodax_ws = IndodaxWSClient()

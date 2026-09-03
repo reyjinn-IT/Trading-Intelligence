@@ -1,10 +1,8 @@
-"""Automated Risk Management: POI, Invalidation (Cut Loss), Take Profit targets, and Position Sizing."""
 import logging
 from typing import Dict, Any
 from src.core.config import settings
 
 logger = logging.getLogger("RiskManager")
-
 
 class RiskManager:
     def __init__(
@@ -24,10 +22,6 @@ class RiskManager:
         action: str = "BUY",
         equity: float = 10000000.0
     ) -> Dict[str, Any]:
-        """
-        Calculate Point of Interest (POI), Cut Loss / Invalidation, TP1 (1:2 R:R), TP2 (1:3 R:R),
-        and maximum safe position sizing.
-        """
         if entry_price <= 0:
             return {"valid": False, "error": "Invalid entry price."}
 
@@ -83,6 +77,5 @@ class RiskManager:
             "max_risk_amount_idr": round(max_risk_amount, 2),
             "summary": summary_text
         }
-
 
 risk_manager = RiskManager()

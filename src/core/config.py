@@ -1,4 +1,3 @@
-"""Configuration settings for AI Expert Trading Assistant."""
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
 import os

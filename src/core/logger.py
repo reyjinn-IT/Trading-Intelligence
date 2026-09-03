@@ -1,4 +1,3 @@
-"""Logging module with PRD-compliant Mandatory Evaluation Output Formatter."""
 import logging
 import sys
 from typing import Dict, Any
@@ -26,16 +25,7 @@ logging.basicConfig(
 
 logger = logging.getLogger("AI_Trading_Assistant")
 
-
 def format_mandatory_evaluation_report(eval_data: Dict[str, Any]) -> str:
-    """
-    Format output evaluasi wajib sesuai PRD Section 3:
-    1. Pencocokan Memori: (Korelasi dengan jurnal/data historis)
-    2. Analisis Teknikal: (Struktur tren dan level kunci saat ini)
-    3. Analisis Fundamental: (Katalis berita dan dampaknya)
-    4. Skor Konfluensi: (% Probabilitas berdasarkan total pembobotan)
-    5. POI & Invalidasi: (Level pantau (POI) dan batas toleransi kegagalan setup)
-    """
     memory_match = eval_data.get("memory_match", "Tidak ada korelasi signifikan ditemukan.")
     tech_analysis = eval_data.get("technical_analysis", "Tren netral / Konsolidasi.")
     fundamental_analysis = eval_data.get("fundamental_analysis", "Netral, tidak ada rilis berita berdampak tinggi.")
@@ -63,9 +53,7 @@ def format_mandatory_evaluation_report(eval_data: Dict[str, Any]) -> str:
     )
     return report
 
-
 def print_rich_evaluation_report(eval_data: Dict[str, Any]) -> None:
-    """Render the mandatory evaluation report with a rich aesthetic panel for terminal."""
     pair = eval_data.get("pair", "UNKNOWN").upper()
     action = eval_data.get("action", "HOLD").upper()
     score = eval_data.get("confluence_score", 0.0)

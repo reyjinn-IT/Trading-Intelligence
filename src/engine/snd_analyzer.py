@@ -1,17 +1,12 @@
-"""Supply & Demand (SND) and Key Level Analyzer for 30% Confluence Scoring."""
 import numpy as np
 import pandas as pd
 from typing import Dict, Any, List, Tuple
-
 
 class SNDAnalyzer:
     def __init__(self):
         pass
 
     def identify_key_levels(self, candles: List[Dict[str, Any]]) -> Dict[str, Any]:
-        """
-        Identify Support & Resistance levels, Order Blocks, and Supply/Demand zones.
-        """
         if not candles or len(candles) < 10:
             return {"support": 0.0, "resistance": 0.0, "zones": []}
 
@@ -51,10 +46,6 @@ class SNDAnalyzer:
         }
 
     def analyze(self, candles: List[Dict[str, Any]], trend_direction: str = "BULLISH") -> Dict[str, Any]:
-        """
-        Analyze Key Levels / SND (30% of total confluence).
-        Determines POI (Point of Interest), Invalidation Level, and SND score (0 - 100).
-        """
         if not candles or len(candles) < 10:
             return {
                 "score": 50.0,
@@ -138,6 +129,5 @@ class SNDAnalyzer:
             "zone_desc": zone_desc,
             "summary": summary
         }
-
 
 snd_analyzer = SNDAnalyzer()

@@ -1,4 +1,3 @@
-"""Master Evaluator implementing the Mandatory Evaluation Output required by PRD Section 3."""
 import logging
 from typing import Dict, Any, Optional
 from src.core.config import settings
@@ -9,7 +8,6 @@ from src.exchange.xauusd_client import xauusd_client
 from src.memory.in_context_memory import in_context_memory
 from src.engine.confluence_engine import confluence_engine
 from src.engine.risk_manager import risk_manager
-
 
 class TradingEvaluator:
     def __init__(self):
@@ -22,9 +20,6 @@ class TradingEvaluator:
         timeframe: str = "1h",
         print_report: bool = True
     ) -> Dict[str, Any]:
-        """
-        Execute full market analysis pipeline and generate the PRD Mandatory 5-Point Evaluation Output.
-        """
         pair_lower = pair.lower()
         is_gold = "xau" in pair_lower or "gold" in pair_lower
 
@@ -93,9 +88,6 @@ class TradingEvaluator:
         return mandatory_evaluation
 
     def execute_evaluated_trade(self, eval_data: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Execute trade based on evaluation if conditions pass safety thresholds and Deadman switch is armed.
-        """
         pair = eval_data.get("pair", "BTC_IDR").lower()
         action = eval_data.get("action", "HOLD")
         score = eval_data.get("confluence_score", 0.0)
@@ -143,6 +135,5 @@ class TradingEvaluator:
             "order_result": order_res,
             "evaluation": eval_data
         }
-
 
 evaluator = TradingEvaluator()

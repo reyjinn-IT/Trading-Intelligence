@@ -1,4 +1,3 @@
-"""Macroeconomic sentiment analyzer for 30% Confluence Scoring."""
 import time
 import requests
 import logging
@@ -6,14 +5,12 @@ from typing import Dict, Any, Optional
 
 logger = logging.getLogger("MacroAnalyzer")
 
-
 class MacroAnalyzer:
     def __init__(self):
         self.cached_fng: Optional[Dict[str, Any]] = None
         self.last_fng_fetch: float = 0.0
 
     def get_crypto_fear_and_greed(self) -> Dict[str, Any]:
-        """Fetch live Crypto Fear and Greed Index from alternative.me with caching."""
         now = time.time()
         if self.cached_fng and (now - self.last_fng_fetch < 900):  # Cache 15 minutes
             return self.cached_fng
@@ -41,10 +38,6 @@ class MacroAnalyzer:
         return fallback
 
     def analyze(self, asset_type: str = "CRYPTO") -> Dict[str, Any]:
-        """
-        Analyze Macroeconomic Sentiment (30% of total confluence).
-        Returns macro_score (0 - 100), sentiment classification, catalysts, and summary.
-        """
         fng = self.get_crypto_fear_and_greed()
         fng_value = fng["value"]
         fng_class = fng["classification"]
@@ -79,6 +72,5 @@ class MacroAnalyzer:
             "impact": impact,
             "summary": summary
         }
-
 
 macro_analyzer = MacroAnalyzer()

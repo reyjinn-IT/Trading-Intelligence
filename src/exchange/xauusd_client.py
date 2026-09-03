@@ -1,4 +1,3 @@
-"""Gold (XAUUSD) Market Data Client with multi-source fallback."""
 import time
 import requests
 import logging
@@ -7,14 +6,12 @@ import numpy as np
 
 logger = logging.getLogger("XAUUSDClient")
 
-
 class XAUUSDClient:
     def __init__(self):
         # Base realistic gold price in USD/oz
         self.base_price = 2850.0
 
     def get_ticker(self) -> Dict[str, Any]:
-        """Fetch current gold (XAU/USD) spot price."""
         # Try fetching real-world gold proxy from Binance PAXG/USDT (1 PAXG = 1 troy oz of gold)
         try:
             resp = requests.get("https://api.binance.com/api/v3/ticker/24hr?symbol=PAXGUSDT", timeout=1.5)
@@ -56,7 +53,6 @@ class XAUUSDClient:
         }
 
     def get_klines(self, timeframe: str = "1h", limit: int = 100) -> List[Dict[str, Any]]:
-        """Fetch or generate OHLCV candlestick series for XAU/USD."""
         # Try to fetch real klines from PAXGUSDT if possible
         tf_map = {"15m": "15m", "1h": "1h", "4h": "4h", "1d": "1d"}
         binance_tf = tf_map.get(timeframe, "1h")
@@ -110,6 +106,5 @@ class XAUUSDClient:
 
         candles[-1]["close"] = cur_px
         return candles
-
 
 xauusd_client = XAUUSDClient()

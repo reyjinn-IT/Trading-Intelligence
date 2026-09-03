@@ -1,13 +1,10 @@
-"""Unit tests for Exchange HMAC-SHA512 auth, Paper Trading, and Deadman Switch."""
 import unittest
 import time
 from src.exchange.indodax_client import IndodaxClient
 from src.core.deadman_switch import DeadmanSwitch
 
-
 class TestExchangeAndDeadman(unittest.TestCase):
     def test_hmac_sha512_signature(self):
-        """Ensure HMAC-SHA512 generation matches standard cryptographic hashing."""
         client = IndodaxClient(api_key="test_key", secret_key="test_secret", live=True)
         payload = "method=getInfo&timestamp=1700000000000&recvWindow=5000"
         sig = client._generate_signature(payload)
@@ -15,7 +12,6 @@ class TestExchangeAndDeadman(unittest.TestCase):
         self.assertEqual(len(sig), 128)  # SHA-512 hex is 128 characters
 
     def test_paper_trading_execution(self):
-        """Ensure paper trading fills orders and updates simulated balances safely."""
         client = IndodaxClient(live=False)
         init_idr = client.paper_balances["idr"]
 
@@ -26,7 +22,6 @@ class TestExchangeAndDeadman(unittest.TestCase):
         self.assertGreater(client.paper_balances["btc"], 0.0)
 
     def test_deadman_switch_timeout_and_callback(self):
-        """Ensure Deadman Switch triggers emergency callback upon heartbeat timeout."""
         called = False
 
         def emergency_callback():
@@ -45,7 +40,6 @@ class TestExchangeAndDeadman(unittest.TestCase):
         self.assertTrue(dm.is_triggered)
         self.assertTrue(called)
         dm.disarm()
-
 
 if __name__ == "__main__":
     unittest.main()

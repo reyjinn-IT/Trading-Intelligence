@@ -1,15 +1,12 @@
-"""Technical Analyzer for 40% Trend & Market Structure scoring."""
 import numpy as np
 import pandas as pd
 from typing import Dict, Any, List
-
 
 class TechnicalAnalyzer:
     def __init__(self):
         pass
 
     def compute_indicators(self, candles: List[Dict[str, Any]]) -> pd.DataFrame:
-        """Convert candles to DataFrame and calculate EMAs, RSI, and MACD."""
         df = pd.DataFrame(candles)
         if len(df) < 14:
             return df
@@ -36,10 +33,6 @@ class TechnicalAnalyzer:
         return df
 
     def analyze(self, candles: List[Dict[str, Any]]) -> Dict[str, Any]:
-        """
-        Analyze Trend & Market Structure (40% of total confluence).
-        Returns trend_score (0 - 100), direction ('BULLISH', 'BEARISH', 'SIDEWAYS'), and detailed text.
-        """
         if not candles or len(candles) < 10:
             return {
                 "score": 50.0,
@@ -129,6 +122,5 @@ class TechnicalAnalyzer:
             "structure_desc": structure_desc,
             "summary": summary
         }
-
 
 technical_analyzer = TechnicalAnalyzer()

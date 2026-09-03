@@ -1,4 +1,3 @@
-"""AI Expert Trading Assistant - Main Entry Point."""
 import argparse
 import sys
 import uvicorn
@@ -19,9 +18,7 @@ from src.engine.evaluator import evaluator
 
 console = Console(force_terminal=True, legacy_windows=False)
 
-
 def run_server(host: str = settings.APP_HOST, port: int = settings.APP_PORT):
-    """Launch the FastAPI Web Application and Dashboard."""
     console.print(
         Panel(
             f"[bold cyan]AI EXPERT TRADING ASSISTANT[/bold cyan]\n"
@@ -34,18 +31,14 @@ def run_server(host: str = settings.APP_HOST, port: int = settings.APP_PORT):
     )
     uvicorn.run("src.web.app:app", host=host, port=port, reload=settings.DEBUG)
 
-
 def run_evaluation(pair: str = "btc_idr", timeframe: str = "1h", execute: bool = False):
-    """Run one-shot evaluation per PRD Section 3 and optional execution."""
     eval_result = evaluator.evaluate_pair(pair=pair, timeframe=timeframe, print_report=True)
     if execute:
         exec_res = evaluator.execute_evaluated_trade(eval_result)
         console.print(f"[bold yellow]Execution Result:[/bold yellow] {exec_res}")
     return eval_result
 
-
 def run_interactive_cli():
-    """Interactive CLI menu for command-line traders."""
     while True:
         console.print("\n[bold cyan]=== AI TRADING ASSISTANT CLI MENU ===[/bold cyan]")
         console.print("1. Evaluasi BTC/IDR (Indodax)")
@@ -77,7 +70,6 @@ def run_interactive_cli():
         except (KeyboardInterrupt, EOFError):
             break
 
-
 def main():
     parser = argparse.ArgumentParser(description="AI Expert Trading Assistant")
     parser.add_argument("--server", action="store_true", help="Start Web Dashboard server")
@@ -100,7 +92,6 @@ def main():
     else:
         # If no arguments provided, default to starting the web dashboard
         run_server(host=args.host, port=args.port)
-
 
 if __name__ == "__main__":
     main()

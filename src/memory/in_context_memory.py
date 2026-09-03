@@ -1,4 +1,3 @@
-"""In-Context Learning Memory Module: Historical CSV parsing, Chart Image Analysis, and Macro Journal Correlation."""
 import json
 import os
 import io
@@ -13,7 +12,6 @@ from src.core.config import settings
 
 logger = logging.getLogger("InContextMemory")
 
-
 class InContextMemory:
     def __init__(self, memory_dir: Optional[Path] = None, historical_dir: Optional[Path] = None):
         self.memory_dir = memory_dir or settings.MEMORY_DIR
@@ -23,7 +21,6 @@ class InContextMemory:
         self._load_journal()
 
     def _load_journal(self) -> None:
-        """Load macroeconomic and setup journal entries."""
         if self.macro_journal_file.exists():
             try:
                 with open(self.macro_journal_file, "r", encoding="utf-8") as f:
@@ -36,7 +33,6 @@ class InContextMemory:
             self.journal_entries = []
 
     def add_journal_entry(self, entry: Dict[str, Any]) -> bool:
-        """Add a new setup journal entry to persistent memory."""
         try:
             self.journal_entries.append(entry)
             self.memory_dir.mkdir(parents=True, exist_ok=True)
@@ -48,10 +44,6 @@ class InContextMemory:
             return False
 
     def parse_historical_csv(self, file_path_or_buffer: Any) -> Dict[str, Any]:
-        """
-        Parse historical CSV data (OHLCV + regime) and calculate pattern stats.
-        Returns summary metrics: win rate of historical setups, average R:R, sample count.
-        """
         try:
             if isinstance(file_path_or_buffer, (str, Path)):
                 df = pd.read_csv(file_path_or_buffer)
@@ -82,10 +74,6 @@ class InContextMemory:
             return {"success": False, "error": str(e)}
 
     def analyze_chart_image(self, image_input: Any) -> Dict[str, Any]:
-        """
-        Analyze a chart image (file path, bytes, or PIL Image) for In-Context visual recognition.
-        Extracts color profile, candle distribution, trend slant, and visual setup detection.
-        """
         try:
             if isinstance(image_input, (str, Path)):
                 img = Image.open(image_input)
@@ -144,11 +132,6 @@ class InContextMemory:
         current_rsi: float,
         current_price: float
     ) -> Dict[str, Any]:
-        """
-        Empirical Quantitative Pattern Discovery:
-        Learns from all historical price candles technically by discovering all historical
-        occurrences of the current technical state and calculating empirical win rates.
-        """
         if not candles or len(candles) < 30:
             return {
                 "learned": False,
@@ -272,11 +255,6 @@ class InContextMemory:
         current_rsi: float = 50.0,
         current_price: float = 0.0
     ) -> Dict[str, Any]:
-        """
-        Evaluate correlation between current market conditions, macroeconomic memory,
-        and empirical technical pattern learning across all price history.
-        Produces point 1 of the Mandatory Evaluation Output.
-        """
         # 1. Technical Learning across all historical prices
         tech_learning = self.learn_from_technical_history(
             candles=candles or [],
@@ -332,6 +310,5 @@ class InContextMemory:
             "technical_learning": tech_learning,
             "summary": summary
         }
-
 
 in_context_memory = InContextMemory()

@@ -1,4 +1,3 @@
-"""Indodax REST API Client with HMAC-SHA512 signing and Paper Trading support."""
 import hmac
 import hashlib
 import time
@@ -9,7 +8,6 @@ from typing import Dict, Any, Optional, List
 from src.core.config import settings
 
 logger = logging.getLogger("IndodaxClient")
-
 
 class IndodaxClient:
     def __init__(self, api_key: Optional[str] = None, secret_key: Optional[str] = None, live: Optional[bool] = None):
@@ -30,11 +28,9 @@ class IndodaxClient:
         self._next_paper_order_id = 1001
 
     def _normalize_pair(self, pair: str) -> str:
-        """Format pair as lowercase without underscores for public API (e.g. btc_idr -> btcidr)."""
         return pair.lower().replace("_", "")
 
     def _format_tapi_pair(self, pair: str) -> str:
-        """Format pair as lowercase with underscore for Trade API (e.g. btcidr -> btc_idr)."""
         p = pair.lower()
         if "_" in p:
             return p
@@ -47,7 +43,6 @@ class IndodaxClient:
         return p
 
     def _generate_signature(self, post_data: str) -> str:
-        """Sign request payload using HMAC-SHA512 per Indodax Trade API specification."""
         if not self.secret_key:
             return ""
         return hmac.new(
@@ -59,7 +54,6 @@ class IndodaxClient:
     # --- PUBLIC API METHODS ---
 
     def get_pairs(self) -> List[Dict[str, Any]]:
-        """Fetch all tradable pairs from Indodax."""
         try:
             url = f"{self.rest_url}/pairs"
             resp = requests.get(url, timeout=10)
@@ -74,7 +68,6 @@ class IndodaxClient:
         ]
 
     def get_ticker(self, pair: str = "btc_idr") -> Dict[str, Any]:
-        """Fetch latest real-time ticker data directly from Indodax API."""
         norm_pair = self._normalize_pair(pair)
         url = f"{self.rest_url}/ticker/{norm_pair}"
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
@@ -117,9 +110,6 @@ class IndodaxClient:
         }
 
     def get_klines(self, pair: str = "btc_idr", timeframe: str = "1h", limit: int = 100) -> List[Dict[str, Any]]:
-        """
-        Fetch 100% REAL OHLCV candlestick data directly from Indodax TradingView API.
-        """
         symbol = self._normalize_pair(pair).upper()
         # Map timeframe to Indodax TV format: (param, bar_seconds, total_historical_window_seconds)
         tf_map = {
@@ -222,7 +212,6 @@ class IndodaxClient:
     # --- PRIVATE API METHODS (TRADE API V2) ---
 
     def _call_private_api(self, method: str, params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
-        """Make authenticated request to Indodax Trade API V2 using HMAC-SHA512."""
         if not self.live or not self.api_key or not self.secret_key:
             return {"success": 0, "error": "Not configured for live trading or API keys missing."}
 
@@ -251,7 +240,6 @@ class IndodaxClient:
             return {"success": 0, "error": str(e)}
 
     def get_info(self) -> Dict[str, Any]:
-        """Get account information and balances."""
         if self.live and self.api_key and self.secret_key:
             res = self._call_private_api("getInfo")
             if res.get("success") == 1:
@@ -274,12 +262,6 @@ class IndodaxClient:
         }
 
     def create_order(self, pair: str, order_type: str, price: float, amount: float) -> Dict[str, Any]:
-        """
-        Execute an order (buy or sell).
-        order_type: 'buy' or 'sell'
-        price: limit order price in IDR
-        amount: for buy in IDR amount, or for sell in coin amount
-        """
         tapi_pair = self._format_tapi_pair(pair)
         order_type = order_type.lower()
 
@@ -345,7 +327,6 @@ class IndodaxClient:
         }
 
     def cancel_order(self, pair: str, order_id: int, order_type: str = "buy") -> Dict[str, Any]:
-        """Cancel an open order."""
         tapi_pair = self._format_tapi_pair(pair)
         if self.live and self.api_key and self.secret_key:
             return self._call_private_api("cancelOrder", {
@@ -359,7 +340,6 @@ class IndodaxClient:
         return {"success": 1, "return": {"order_id": order_id, "status": "cancelled", "simulated": True}}
 
     def get_open_orders(self, pair: Optional[str] = None) -> List[Dict[str, Any]]:
-        """Get currently open orders."""
         if self.live and self.api_key and self.secret_key:
             params = {}
             if pair:
@@ -373,7 +353,6 @@ class IndodaxClient:
         return [o for o in self.paper_orders if o.get("status") == "open"]
 
     def cancel_all_open_orders(self) -> int:
-        """Emergency method called by Deadman Switch to cancel all pending orders."""
         open_orders = self.get_open_orders()
         cancelled_count = 0
         for o in open_orders:
@@ -385,7 +364,6 @@ class IndodaxClient:
                 cancelled_count += 1
         logger.info("Deadman Switch cancelled %d open orders on Indodax.", cancelled_count)
         return cancelled_count
-
 
 # Global Indodax Client instance
 indodax_client = IndodaxClient()
