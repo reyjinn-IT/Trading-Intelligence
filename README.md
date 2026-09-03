@@ -65,24 +65,7 @@ Salin file `.env.example` menjadi `.env`:
 cp .env.example .env
 ```
 
-Sesuaikan parameter di file `.env`. Untuk mode analisis, autentikasi hanya membutuhkan API Key:
-```env
-INDODAX_API_KEY=
-INDODAX_SECRET_KEY=
-LIVE_TRADING=false
-WEIGHT_TREND=0.40
-WEIGHT_SND=0.30
-WEIGHT_MACRO=0.30
-MIN_CONFLUENCE_BUY_SCORE=70.0
-MIN_CONFLUENCE_SELL_SCORE=70.0
-MAX_RISK_PER_TRADE_PERCENT=2.0
-MIN_RISK_REWARD_RATIO=2.0
-DEADMAN_TIMEOUT_SEC=30
-ENABLE_DEADMAN_SWITCH=true
-APP_HOST=127.0.0.1
-APP_PORT=8000
-DEBUG=false
-```
+Sesuaikan parameter di file `.env`. Untuk mode analisis, autentikasi hanya membutuhkan API Key sesuai dengan environment yang dibutuhkan.
 
 ### 4. Menjalankan Web Dashboard Terminal
 Jalankan server aplikasi web FastAPI:
