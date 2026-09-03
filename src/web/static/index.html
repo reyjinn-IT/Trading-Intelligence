@@ -13,7 +13,10 @@
 <body>
     <header class="top-bar">
         <div class="brand-section">
-            <span class="pair-label">BTC / IDR</span>
+            <div class="pair-switcher">
+                <button class="pair-btn active" data-pair="btc_idr">BTC / IDR</button>
+                <button class="pair-btn" data-pair="btc_usdt">BTC / USDT</button>
+            </div>
             <span class="feed-source">Indodax spot</span>
         </div>
 
@@ -152,6 +155,10 @@
                 </div>
             </div>
         </section>
+
+        <footer class="terminal-footer">
+            <span>&copy; 2026 reyjinn-IT. All rights reserved.</span>
+        </footer>
     </main>
 
     <script src="/static/app.js"></script>

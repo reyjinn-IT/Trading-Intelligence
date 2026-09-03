@@ -194,3 +194,7 @@ TRADING/
 ## Lisensi & Batasan Tanggung Jawab
 
 Perangkat lunak ini dikembangkan untuk keperluan riset analisis kuantitatif dan bantuan pengambilan keputusan teknikal. Perdagangan aset kripto memiliki risiko volatilitas tinggi. Pengembang tidak bertanggung jawab atas kerugian finansial yang diakibatkan oleh keputusan perdagangan independen pengguna.
+
+---
+
+&copy; 2026 reyjinn-IT. All rights reserved.

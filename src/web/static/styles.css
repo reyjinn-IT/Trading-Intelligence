@@ -62,11 +62,36 @@ body {
   gap: 0.75rem;
 }
 
-.pair-label {
-  font-size: 0.95rem;
-  font-weight: 600;
+.pair-switcher {
+  display: inline-flex;
+  background: var(--bg-base);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2px;
+  gap: 2px;
+}
+
+.pair-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  padding: 0.28rem 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  border-radius: calc(var(--radius) - 1px);
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.pair-btn:hover {
   color: var(--text-primary);
-  letter-spacing: -0.2px;
+}
+
+.pair-btn.active {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
 .feed-source {
@@ -378,4 +403,11 @@ body {
   font-size: 0.77rem;
   color: var(--text-primary);
   line-height: 1.5;
+}
+
+.terminal-footer {
+  text-align: center;
+  padding: 1.25rem 0 0.5rem;
+  font-size: 0.72rem;
+  color: var(--text-muted);
 }
