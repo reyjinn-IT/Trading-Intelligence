@@ -63,7 +63,7 @@ def run_interactive_cli():
                 run_server()
                 break
             elif choice == "0":
-                console.print("[yellow]Menutup bot trading. Sampai jumpa![/yellow]")
+                console.print("[yellow]Menutup terminal sistem. Sampai jumpa![/yellow]")
                 break
             else:
                 console.print("[red]Pilihan tidak valid.[/red]")
