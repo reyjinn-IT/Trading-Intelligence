@@ -67,7 +67,7 @@ cp .env.example .env
 
 Sesuaikan parameter di file `.env`. Untuk mode analisis, autentikasi hanya membutuhkan API Key:
 ```env
-INDODAX_API_KEY=12300
+INDODAX_API_KEY=
 INDODAX_SECRET_KEY=
 LIVE_TRADING=false
 WEIGHT_TREND=0.40
