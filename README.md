@@ -7,39 +7,39 @@ Terminal analisis kuantitatif dan sistem intelijen pasar real-time untuk perdaga
 ## Fitur Utama
 
 ### 1. Umpan Data Pasar Riil Indodax & Dual Currency Support
-- **Dukungan Pasangan Mata Uang:** Terhubung langsung ke REST Ticker API dan TradingView History Engine resmi Indodax untuk pasangan **BTC / IDR** dan **BTC / USDT**.
-- **Switcher Mata Uang Instan:** Header terminal dilengkapi tombol switcher interaktif untuk beralih instan antara denominasi Rupiah (IDR) dan Dollar (USDT) dengan konversi otomatis pada chart, skala harga, dan level strategis.
-- **Cakupan Historis Lengkap:** Menarik data historis maksimal di setiap timeframe:
+> **Dukungan Pasangan Mata Uang:** Terhubung langsung ke REST Ticker API dan TradingView History Engine resmi Indodax untuk pasangan **BTC / IDR** dan **BTC / USDT**.
+> **Switcher Mata Uang Instan:** Header terminal dilengkapi tombol switcher interaktif untuk beralih instan antara denominasi Rupiah (IDR) dan Dollar (USDT) dengan konversi otomatis pada chart, skala harga, dan level strategis.
+> **Cakupan Historis Lengkap:** Menarik data historis maksimal di setiap timeframe:
   - Timeframe 15 Menit (15m): ~1.340 bar (riwayat 14 hari penuh).
   - Timeframe 1 Jam (1h): ~1.440 bar (riwayat 60 hari penuh).
   - Timeframe 4 Jam (4h): ~1.080 bar (riwayat 180 hari penuh).
   - Timeframe 1 Hari (1d): ~730 bar (riwayat 2 tahun penuh).
 
 ### 2. Mesin Konfluensi Terbobot (40 - 30 - 30)
-- **40% Tren & Struktur Pasar:** Kalkulasi EMA (18, 50, 200), deteksi Break of Structure (BOS) / Change of Character (CHoCH), momentum RSI 14, dan histogram MACD (12, 26, 9).
-- **30% Level Kunci & Supply/Demand:** Identifikasi zona Demand (Diskon) dan Supply (Premium), penentuan Point of Interest (POI), batas Cut Loss objektif, serta target Take Profit bertingkat (1:2 dan 1:3 Risk-to-Reward).
-- **30% Sentimen Makro:** Integrasi live Crypto Fear & Greed Index dari alternative.me dan evaluasi sentimen pasar.
+> **40% Tren & Struktur Pasar:** Kalkulasi EMA (18, 50, 200), deteksi Break of Structure (BOS) / Change of Character (CHoCH), momentum RSI 14, dan histogram MACD (12, 26, 9).
+> **30% Level Kunci & Supply/Demand:** Identifikasi zona Demand (Diskon) dan Supply (Premium), penentuan Point of Interest (POI), batas Cut Loss objektif, serta target Take Profit bertingkat (1:2 dan 1:3 Risk-to-Reward).
+> **30% Sentimen Makro:** Integrasi live Crypto Fear & Greed Index dari alternative.me dan evaluasi sentimen pasar.
 
 ### 3. Pembelajaran Mesin Empiris Berdasarkan Riwayat Harga
-- Model memindai seluruh data candlestick historis (hingga 1.440+ bar) untuk mencari kemunculan pola teknikal yang identik dengan kondisi saat ini.
-- Menghitung statistik empiris nyata: jumlah sampel kemunculan, win rate historis aktual, rata-rata realisasi rasio R:R, dan estimasi durasi (jumlah bar) menuju target profit.
+> Model memindai seluruh data candlestick historis (hingga 1.440+ bar) untuk mencari kemunculan pola teknikal yang identik dengan kondisi saat ini.
+> Menghitung statistik empiris nyata: jumlah sampel kemunculan, win rate historis aktual, rata-rata realisasi rasio R:R, dan estimasi durasi (jumlah bar) menuju target profit.
 
 ### 4. Antarmuka Terminal Profesional (Graphite Edition)
-- **Desain Terminal Institusional:** Menggunakan palet Graphite Dark (`#0A0A0C`), panel (`#121316`), dan garis pembatas hairline (`#232428`).
-- **Tipografi Sentence Case:** Menggunakan font IBM Plex Sans untuk teks UI/label dan IBM Plex Mono tabular-nums untuk angka harga dan metrik kuantitatif. Bebas dari gaya ALL CAPS.
-- **Grafik TradingView Bersih:** Menggunakan TradingView Lightweight Charts v4.1.1 lokal. Indikator kurva EMA 18 dan EMA 50 terplot rapi tanpa menutupi atau menumpuk angka pada sumbu harga kanan.
+> **Desain Terminal Institusional:** Menggunakan palet Graphite Dark (`#0A0A0C`), panel (`#121316`), dan garis pembatas hairline (`#232428`).
+> **Tipografi Sentence Case:** Menggunakan font IBM Plex Sans untuk teks UI/label dan IBM Plex Mono tabular-nums untuk angka harga dan metrik kuantitatif. Bebas dari gaya ALL CAPS.
+> **Grafik TradingView Bersih:** Menggunakan TradingView Lightweight Charts v4.1.1 lokal. Indikator kurva EMA 18 dan EMA 50 terplot rapi tanpa menutupi atau menumpuk angka pada sumbu harga kanan.
 
 ### 5. Mekanisme Pengaman (Deadman Switch & Paper Trading)
-- **Deadman Switch:** Daemon monitor heartbeat (default timeout 30 detik) yang secara otomatis membatalkan seluruh order terbuka jika koneksi atau aplikasi terputus.
-- **Mode Paper Trading:** Eksekusi simulasi aman secara default tanpa risiko modal riil.
+> **Deadman Switch:** Daemon monitor heartbeat (default timeout 30 detik) yang secara otomatis membatalkan seluruh order terbuka jika koneksi atau aplikasi terputus.
+> **Mode Paper Trading:** Eksekusi simulasi aman secara default tanpa risiko modal riil.
 
 ---
 
 ## Panduan Menjalankan (How to Run)
 
 ### 1. Kebutuhan Sistem
-- Python 3.9 atau versi yang lebih baru
-- Akses internet untuk menarik data Indodax dan Fear & Greed API
+1. Python 3.9 atau versi yang lebih baru
+2. Akses internet untuk menarik data Indodax dan Fear & Greed API
 
 ### 2. Instalasi Dependensi
 Clone atau buka direktori proyek di terminal, buat virtual environment, dan pasang paket yang dibutuhkan:
@@ -121,13 +121,13 @@ Audit akurasi empiris dihasilkan langsung oleh modul evaluasi pola teknikal (`In
 
 ### 2. Distribusi Akurasi Berdasarkan Skor Konfluensi (Pilar 40 - 30 - 30)
 
-- **Skor Konfluensi Tinggi (≥ 70.0% - Sinyal Kuat / Akumulasi / Distribusi):**
+> **Skor Konfluensi Tinggi (≥ 70.0% - Sinyal Kuat / Akumulasi / Distribusi):**
   - Akurasi Win Rate: **78.4%**
   - Karakteristik: EMA (18, 50, 200) selaras sempurna, terkonfirmasi Bullish/Bearish Break of Structure (BOS), harga berada di zona Point of Interest (POI) Supply/Demand, dan sentimen pasar mendukung.
-- **Skor Konfluensi Menengah (55.0% - 69.9% - Sinyal Moderat):**
+> **Skor Konfluensi Menengah (55.0% - 69.9% - Sinyal Moderat):**
   - Akurasi Win Rate: **68.2%**
   - Karakteristik: Terjadi pullback teknikal di sekitar EMA 18 atau 50, namun konfirmasi momentum atau sentimen makro masih bervariasi.
-- **Skor Konfluensi Rendah (< 55.0% - Filter Risiko / Konsolidasi):**
+> **Skor Konfluensi Rendah (< 55.0% - Filter Risiko / Konsolidasi):**
   - Status: Sistem secara otomatis menetapkan status **Netral (Konsolidasi)** dan menolak eksekusi setup untuk melindungi modal trader dari sideways whipsaw.
 
 ---
