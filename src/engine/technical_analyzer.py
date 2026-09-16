@@ -38,7 +38,7 @@ class TechnicalAnalyzer:
                 "score": 50.0,
                 "direction": "SIDEWAYS",
                 "trend_state": "DATA_LIMITED",
-                "summary": "Data candlestick terbatas; tren netral / konsolidasi."
+                "summary": "Limited candlestick data; neutral/consolidation trend."
             }
 
         df = self.compute_indicators(candles)
@@ -55,7 +55,7 @@ class TechnicalAnalyzer:
         # 1. Trend Direction Scoring
         score = 50.0
         direction = "SIDEWAYS"
-        structure_desc = "Konsolidasi di sekitar moving average."
+        structure_desc = "Consolidating around moving averages."
 
         # Detect EMA alignment (18, 50, 200)
         is_uptrend = close > ema18 and ema18 > ema50 and ema50 >= ema200
@@ -72,16 +72,16 @@ class TechnicalAnalyzer:
             score = 75.0
             if is_higher_high:
                 score += 15.0
-                structure_desc = "Konfirmasi Bullish Break of Structure (BOS), Higher High tercapai."
+                structure_desc = "Bullish Break of Structure (BOS) confirmed, Higher High achieved."
             else:
-                structure_desc = "Struktur Uptrend solid (Harga > EMA 18 > EMA 50 > EMA 200)."
+                structure_desc = "Solid uptrend structure (Price > EMA 18 > EMA 50 > EMA 200)."
 
             # Momentum additions
             if 50.0 <= rsi <= 70.0:
                 score += 10.0
             elif rsi > 78.0:
                 score -= 10.0  # Overbought penalty
-                structure_desc += " Waspada kondisi RSI Overbought."
+                structure_desc += " Caution: RSI Overbought condition."
             if macd_hist > 0:
                 score += 5.0
 
@@ -90,22 +90,22 @@ class TechnicalAnalyzer:
             score = 25.0
             if is_lower_low:
                 score -= 15.0
-                structure_desc = "Konfirmasi Bearish Break of Structure (BOS), Lower Low terbentuk."
+                structure_desc = "Bearish Break of Structure (BOS) confirmed, Lower Low formed."
             else:
-                structure_desc = "Struktur Downtrend dominan (Harga < EMA 18 < EMA 50 < EMA 200)."
+                structure_desc = "Dominant downtrend structure (Price < EMA 18 < EMA 50 < EMA 200)."
 
             if 30.0 <= rsi <= 50.0:
                 score -= 5.0
             elif rsi < 22.0:
                 score += 10.0  # Oversold bounce possibility
-                structure_desc += " Kondisi RSI Oversold ekstrem."
+                structure_desc += " Extreme RSI Oversold condition."
             if macd_hist < 0:
                 score -= 5.0
 
         score = max(5.0, min(98.0, score))
 
         summary = (
-            f"Arah Tren: {direction} ({structure_desc}) | "
+            f"Trend Direction: {direction} ({structure_desc}) | "
             f"RSI(14): {rsi:.1f}, EMA18: {ema18:,.2f}, EMA50: {ema50:,.2f}, "
             f"MACD Hist: {macd_hist:+.2f}"
         )

@@ -40,7 +40,118 @@ body {
   font-size: 13px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  height: 100vh;
+  overflow: hidden;
 }
+
+/* Hide scrollbar completely across all browsers */
+::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+/* APP SHELL LAYOUT */
+.app-layout {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  position: relative;
+}
+
+.app-sidebar {
+  width: 250px;
+  background: var(--bg-panel);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: absolute;
+  left: -250px;
+  top: 0;
+  height: 100%;
+  z-index: 1100;
+  transition: left 0.3s ease;
+}
+
+.app-layout.sidebar-open .app-sidebar {
+  left: 0;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.avatar-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--bg-subtle);
+  flex-shrink: 0;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.user-handle {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.nav-menu {
+  list-style: none;
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-menu li a {
+  display: block;
+  padding: 0.8rem 1.5rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.nav-menu li a:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.nav-menu li a.active {
+  background: rgba(56, 189, 248, 0.1);
+  color: #38BDF8; /* indicator-ema18 */
+  border-left-color: #38BDF8;
+}
+
+.app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 
 .mono {
   font-family: var(--font-mono);
@@ -54,6 +165,9 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .brand-section {
@@ -149,24 +263,92 @@ body {
 }
 
 .main-wrapper {
-  max-width: 1560px;
-  margin: 0 auto;
-  padding: 1.25rem 1.75rem;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-width: 100%;
+  margin: 0;
+  padding: 1.25rem 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
 }
 
-.workspace-grid {
+.workspace-grid-3col {
   display: grid;
-  grid-template-columns: 1fr 370px;
+  grid-template-columns: 320px 1fr 320px;
   gap: 1.25rem;
+  align-items: start;
 }
 
-@media (max-width: 1080px) {
-  .workspace-grid {
-    grid-template-columns: 1fr;
+.col-chart-dossier { display: flex; flex-direction: column; gap: 1.25rem; }
+.col-orderbook { display: flex; flex-direction: column; background: var(--bg-panel); border: 1px solid var(--border); border-radius: var(--radius); height: 860px; }
+.col-analysis { display: flex; flex-direction: column; }
+
+/* Orderbook Styles */
+.ob-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+}
+
+.ob-tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  padding: 0.85rem;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.ob-tab:hover { color: var(--text-primary); }
+.ob-tab.active {
+  color: var(--text-primary);
+  border-bottom-color: #38BDF8;
+}
+
+.ob-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+}
+
+.ob-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.ob-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.15rem 1rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+.ob-row:hover { background: var(--bg-hover); }
+.ob-price { flex: 1; font-weight: 500; }
+.ob-amount { flex: 1; text-align: right; color: var(--text-primary); }
+.ob-time { flex: 1; text-align: right; color: var(--text-secondary); }
+
+@media (max-width: 1300px) {
+  .workspace-grid-3col {
+    grid-template-columns: 320px 1fr;
   }
+  .col-analysis {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 900px) {
+  .workspace-grid-3col { grid-template-columns: 1fr; }
 }
 
 .chart-section {

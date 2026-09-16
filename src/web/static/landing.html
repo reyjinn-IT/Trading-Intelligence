@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Intellegence | Institutional Execution</title>
+    <meta name="description" content="Professional quantitative terminal and real-time market intelligence.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/landing.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="brand">
+                <span class="brand-text">Trading Intellegence</span>
+            </div>
+            <nav class="nav-links">
+                <a href="/architecture">Architecture</a>
+                <a href="/metrics">Metrics</a>
+                <a href="/security">Risk Controls</a>
+            </nav>
+            <div class="nav-actions">
+                <a href="/terminal" class="btn btn-primary" hidden>INITIATE TERMINAL</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <div class="system-badge">[ SPOT: ACTIVE ]</div>
+                    <div class="system-badge">[ FUTURE: INACTIVE ]</div>
+                    <h1 class="hero-title">Algorithmic precision.<br>Empirical execution.</h1>
+                    <p class="hero-subtitle">Institutional-grade market intelligence system utilizing multi-factor confluence weighting and historical pattern aggregation for BTC pairs.</p>
+                    <div class="hero-actions">
+                        <a href="/terminal" class="btn btn-primary">LAUNCH TERMINAL</a>
+                        <a href="/documentation" class="btn btn-secondary">READ DOCS</a>
+                    </div>
+                </div>
+                
+                <div class="terminal-preview">
+                    <div class="term-header">
+                        <span class="term-title">usr@quant-terminal:~/engine/v2.4$</span>
+                        <span style="letter-spacing: 1px; color: var(--border-solid); font-size: 0.75rem;">[&minus;] [&#x25A1;] [x]</span>
+                    </div>
+                    <div class="term-body">
+                        <div class="data-row"><span class="label">TICKER:</span> <span class="value">BTC/IDR</span></div>
+                        <div class="data-row"><span class="label">LAST_PRICE:</span> <span id="lp-price" class="value">Memuat...</span></div>
+                        <div class="data-row"><span class="label">VOL_24H:</span> <span id="lp-vol" class="value">Memuat...</span></div>
+                        <div class="data-row"><span class="label">SPREAD:</span> <span class="value">0.012%</span></div>
+                        <br>
+                        <div class="data-row"><span class="label">CONFLUENCE_SCORE:</span> <span id="lp-score" class="value hl-neutral">...</span></div>
+                        <div class="data-row"><span class="label">SIGNAL:</span> <span id="lp-signal" class="value hl-neutral">PROCESSING</span></div>
+                        <span class="cursor">_</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="saas-section reveal">
+            <h2 class="section-title" style="text-align: center; border: none; margin-bottom: 3rem;">WHY CHOOSE US?</h2>
+            <div class="saas-grid">
+                <div class="saas-card">
+                    <div class="saas-icon">[01]</div>
+                    <h3>100% Objective Execution</h3>
+                    <p>Zero human bias. Our algorithmic engine relies entirely on strict mathematical confluence models, eliminating emotional interference from your strategy.</p>
+                </div>
+                <div class="saas-card">
+                    <div class="saas-icon">[02]</div>
+                    <h3>Data-Driven Edge</h3>
+                    <p>We don't use arbitrary standard indicators. The terminal leverages in-context pattern learning across historical data vectors to find high-probability setups.</p>
+                </div>
+                <div class="saas-card">
+                    <div class="saas-icon">[03]</div>
+                    <h3>Institutional Risk Controls</h3>
+                    <p>Capital preservation is hardcoded. Featuring hardware-level deadman switches and dynamic invalidation points to strictly cap your downside exposure.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="saas-cta reveal">
+            <div class="cta-content">
+                <h2 style="font-weight: 500; font-size: 2rem; margin-bottom: 1rem; color: var(--text-primary);">Ready to eliminate guesswork?</h2>
+                <p style="color: var(--text-dim); margin-bottom: 2rem; font-size: 1.1rem;">Deploy the quantitative terminal locally and analyze real-time structures.</p>
+                <a href="/terminal" class="btn btn-primary">INITIALIZE WORKSPACE</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-layout">
+            <div class="copyright">&copy; 2026 reyjinn-IT. System built for quantitative research.</div>
+            <div class="footer-links">
+                <span>VER: 2.4.1</span>
+                <span>LATENCY: OPTIMAL</span>
+            </div>
+        </div>
+    </footer>
+    <script>
+        async function fetchLandingData() {
+            try {
+                const tickerRes = await fetch('/api/ticker?pair=btc_idr');
+                if (tickerRes.ok) {
+                    const t = await tickerRes.json();
+                    const lpPrice = document.getElementById('lp-price');
+                    lpPrice.textContent = parseInt(t.last).toLocaleString('id-ID');
+                    lpPrice.className = 'value bull';
+                    document.getElementById('lp-vol').textContent = `${parseFloat(t.vol_btc || 0).toFixed(2)} BTC`;
+                }
+
+                const evalRes = await fetch('/api/evaluate?pair=btc_idr&timeframe=1h');
+                if (evalRes.ok) {
+                    const e = await evalRes.json();
+                    const score = e.confluence_score || 0;
+                    const action = e.action || 'HOLD';
+                    
+                    const scoreEl = document.getElementById('lp-score');
+                    scoreEl.textContent = score.toFixed(2);
+                    
+                    const signalEl = document.getElementById('lp-signal');
+                    
+                    if (action === 'BUY') {
+                        signalEl.textContent = 'STRONG_BUY';
+                        signalEl.className = 'value hl-bull';
+                        scoreEl.className = 'value hl-bull';
+                    } else if (action === 'SELL') {
+                        signalEl.textContent = 'STRONG_SELL';
+                        signalEl.className = 'value hl-bear';
+                        scoreEl.className = 'value hl-bear';
+                    } else {
+                        signalEl.textContent = 'NEUTRAL';
+                        signalEl.className = 'value hl-neutral';
+                        scoreEl.className = 'value hl-neutral';
+                    }
+                }
+            } catch (err) {
+                console.error("Failed to fetch terminal data:", err);
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchLandingData();
+            
+            // Scroll Reveal Animation
+            const reveals = document.querySelectorAll(".reveal");
+            const revealOnScroll = () => {
+                const windowHeight = window.innerHeight;
+                reveals.forEach(rev => {
+                    if (rev.getBoundingClientRect().top < windowHeight - 50) {
+                        rev.classList.add("active");
+                    }
+                });
+            };
+            window.addEventListener("scroll", revealOnScroll);
+            revealOnScroll();
+
+            // Number Counter Animation
+            const counters = document.querySelectorAll('.counter');
+            counters.forEach(counter => {
+                const target = parseFloat(counter.getAttribute('data-target'));
+                const prefix = counter.getAttribute('data-prefix') || '';
+                const suffix = counter.getAttribute('data-suffix') || '';
+                const isFloat = target % 1 !== 0;
+                
+                let current = 0;
+                const updateCounter = () => {
+                    const increment = target / 40; // speed
+                    if (current < target) {
+                        current += increment;
+                        counter.textContent = prefix + (isFloat ? current.toFixed(1) : Math.ceil(current)) + suffix;
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        counter.textContent = prefix + target + suffix;
+                    }
+                };
+                
+                // Only start counter when visible
+                const counterObserver = new IntersectionObserver(entries => {
+                    if (entries[0].isIntersecting) {
+                        updateCounter();
+                        counterObserver.disconnect();
+                    }
+                });
+                counterObserver.observe(counter);
+            });
+        });
+        
+        setInterval(fetchLandingData, 10000);
+    </script>
+</body>
+</html>

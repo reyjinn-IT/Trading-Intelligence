@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Intellegence | Metrics</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/landing.css">
+    <style>
+        .page-content { max-width: 1200px; margin: 4rem auto; padding: 0 2rem; }
+        .page-title { font-size: 2.5rem; margin-bottom: 2rem; font-weight: 500; letter-spacing: -1px; border-bottom: 1px solid var(--border-solid); padding-bottom: 1rem; }
+        .back-link { font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-dim); margin-bottom: 2rem; display: inline-block; }
+        .back-link:hover { color: var(--text-primary); }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="brand">
+                <span class="brand-text">Trading Intellegence</span>
+            </div>
+            <nav class="nav-links">
+                <a href="/architecture">Architecture</a>
+                <a href="/metrics">Metrics</a>
+                <a href="/security">Risk Controls</a>
+            </nav>
+            <div class="nav-actions">
+                <a href="/terminal" class="btn btn-primary" hidden>INITIATE TERMINAL</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="page-content">
+        <a href="/" class="back-link">&larr; RETURN TO HOME</a>
+        <h1 class="page-title">PERFORMANCE METRICS</h1>
+        
+        <div class="metrics-grid reveal">
+            <div class="metric-card">
+                <div class="metric-header">EMPIRICAL_WIN_RATE</div>
+                <div class="metric-value hl-bull counter" data-target="74.8" data-suffix="%">0%</div>
+                <div class="metric-sub">Aggregated from all timeframes</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-header">REALIZED_R_R</div>
+                <div class="metric-value counter" data-target="2.32" data-prefix="1:">1:0</div>
+                <div class="metric-sub">Mean historical expectancy</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-header">PATTERN_SETUPS</div>
+                <div class="metric-value counter" data-target="900" data-suffix="+">0+</div>
+                <div class="metric-sub">Identified historically</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-header">CANDLESTICKS_ANALYZED</div>
+                <div class="metric-value counter" data-target="4590" data-suffix="+">0+</div>
+                <div class="metric-sub">Total market scope</div>
+            </div>
+        </div>
+        
+        <div class="reveal" style="margin-top: 4rem; color: var(--text-dim); line-height: 1.6; padding: 2rem; border: 1px solid var(--border-solid); background: var(--bg-surface);">
+            <h3 style="color: var(--text-primary); font-size: 1.25rem; font-weight: 500; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-dim); padding-bottom: 1rem;">DETAILED TIMEFRAME BREAKDOWN</h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; font-family: var(--font-mono); font-size: 0.9rem;">
+                <div>
+                    <div style="margin-bottom: 1rem;">
+                        <strong style="color: var(--text-primary);">15m (14 days)</strong><br>
+                        285 setups | 71.8% Win Rate | 1:2.15 R:R
+                    </div>
+                    <div>
+                        <strong style="color: var(--text-primary);">1h (60 days - Main Engine)</strong><br>
+                        309 setups | <span class="hl-bull" style="background: none; padding: 0;">74.6% Win Rate</span> | 1:2.35 R:R
+                    </div>
+                </div>
+                <div>
+                    <div style="margin-bottom: 1rem;">
+                        <strong style="color: var(--text-primary);">4h (180 days)</strong><br>
+                        194 setups | 76.2% Win Rate | 1:2.45 R:R
+                    </div>
+                    <div>
+                        <strong style="color: var(--text-primary);">1d (2 years)</strong><br>
+                        112 setups | <span class="hl-bull" style="background: none; padding: 0;">78.5% Win Rate</span> | 1:2.60 R:R
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer" style="position: relative; margin-top: 4rem;">
+        <div class="footer-layout">
+            <div class="copyright">&copy; 2026 reyjinn-IT. System built for quantitative research.</div>
+        </div>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Scroll Reveal
+            const reveals = document.querySelectorAll(".reveal");
+            const revealOnScroll = () => {
+                const windowHeight = window.innerHeight;
+                reveals.forEach(rev => {
+                    if (rev.getBoundingClientRect().top < windowHeight - 50) {
+                        rev.classList.add("active");
+                    }
+                });
+            };
+            window.addEventListener("scroll", revealOnScroll);
+            revealOnScroll();
+
+            // Number Counter Animation
+            const counters = document.querySelectorAll('.counter');
+            counters.forEach(counter => {
+                const target = parseFloat(counter.getAttribute('data-target'));
+                const prefix = counter.getAttribute('data-prefix') || '';
+                const suffix = counter.getAttribute('data-suffix') || '';
+                const isFloat = target % 1 !== 0;
+                
+                let current = 0;
+                const updateCounter = () => {
+                    const increment = target / 40; 
+                    if (current < target) {
+                        current += increment;
+                        counter.textContent = prefix + (isFloat ? current.toFixed(1) : Math.ceil(current)) + suffix;
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        counter.textContent = prefix + (isFloat ? target.toFixed(1) : target) + suffix;
+                    }
+                };
+                
+                const observer = new IntersectionObserver(entries => {
+                    if (entries[0].isIntersecting) {
+                        updateCounter();
+                        observer.disconnect();
+                    }
+                });
+                observer.observe(counter);
+            });
+        });
+    </script>
+</body>
+</html>

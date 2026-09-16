@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bitcoin Quantitative Terminal</title>
+    <title>Trading Intelligence Terminal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -11,155 +11,205 @@
     <script src="/static/lightweight-charts.js"></script>
 </head>
 <body>
-    <header class="top-bar">
-        <div class="brand-section">
-            <div class="pair-switcher">
-                <button class="pair-btn active" data-pair="btc_idr">BTC / IDR</button>
-                <button class="pair-btn" data-pair="btc_usdt">BTC / USDT</button>
+    <div class="app-layout">
+        <!-- LEFT SIDEBAR -->
+        <nav class="app-sidebar">
+            <div class="user-profile">
+                <div class="avatar-circle">
+                    <img src="https://ui-avatars.com/api/?name=Quant+User&background=232428&color=E8E8EA" alt="Avatar" style="width:100%; border-radius:50%;">
+                </div>
+                <div class="user-info">
+                    <span class="user-name">Quant User</span>
+                    <span class="user-handle">@quant_user</span>
+                </div>
+                <button id="sidebarClose" class="btn-action" style="background: transparent; border: none; font-size: 1.5rem; color: var(--text-secondary); cursor: pointer; margin-left: auto;">&times;</button>
             </div>
-            <span class="feed-source">Indodax spot</span>
+            <ul class="nav-menu">
+                <li><a href="/terminal" class="active">Terminal Dashboard</a></li>
+                <li><a href="/architecture">System Architecture</a></li>
+                <li><a href="/metrics">Performance Metrics</a></li>
+                <li><a href="/security">Risk Controls</a></li>
+                <li><a href="/documentation">Documentation</a></li>
+            </ul>
+        </nav>
+
+        <!-- MAIN CONTENT -->
+        <div class="app-main">
+            <header class="top-bar">
+                <div class="brand-section">
+                    <button id="sidebarToggle" class="btn-action" style="padding: 4px 8px; font-size: 1.2rem; background: transparent; border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); cursor: pointer; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; margin-right: 10px;">&#9776;</button>
+                    <div class="pair-switcher">
+                        <button class="pair-btn active" data-pair="btc_idr">BTC / IDR</button>
+                        <button class="pair-btn" data-pair="btc_usdt">BTC / USDT</button>
+                    </div>
+                    <span class="feed-source">Indodax spot</span>
+                </div>
+
+                <div class="top-metrics-group">
+                    <div class="metric-cell">
+                        <span class="metric-caption">Last Price</span>
+                        <span id="topLastPrice" class="metric-hero mono">Rp --</span>
+                    </div>
+                    <div class="metric-cell">
+                        <span class="metric-caption">24h High</span>
+                        <span id="topHigh" class="metric-figure mono">Rp --</span>
+                    </div>
+                    <div class="metric-cell">
+                        <span class="metric-caption">24h Low</span>
+                        <span id="topLow" class="metric-figure mono">Rp --</span>
+                    </div>
+                    <div class="metric-cell">
+                        <span class="metric-caption">24h Volume</span>
+                        <span id="topVolIdr" class="metric-figure mono">Rp --</span>
+                    </div>
+                    <button id="btnSync" class="btn-action">Refresh Analysis</button>
+                </div>
+            </header>
+
+            <main class="main-wrapper">
+                <div class="workspace-grid-3col">
+                    <!-- Column 1: Market Activity (Left) -->
+                    <div class="col-orderbook" style="grid-row: 1 / span 2;">
+                        <div class="ob-header" style="justify-content: center; padding: 0.85rem; border-bottom: 1px solid var(--border); font-weight: 500; font-family: var(--font-sans); color: var(--text-primary); font-size: 0.85rem;">
+                            Market Activity
+                        </div>
+                        <div class="ob-header">
+                            <span>Price (IDR)</span>
+                            <span style="text-align: right;">Amount (BTC)</span>
+                            <span style="text-align: right;">Time</span>
+                        </div>
+                        <div class="ob-content mono" id="obContent">
+                            <div style="text-align:center; padding: 2rem 0; color:var(--text-secondary);">Loading data...</div>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Chart & Dossier (Middle) -->
+                    <div class="col-chart-dossier">
+                        <section class="chart-section">
+                            <div class="chart-header">
+                                <div class="tf-switcher">
+                                    <button class="tf-item" data-tf="15m">15m</button>
+                                    <button class="tf-item active" data-tf="1h">1h</button>
+                                    <button class="tf-item" data-tf="4h">4h</button>
+                                    <button class="tf-item" data-tf="1d">1d</button>
+                                </div>
+                                <div class="chart-legend-minimal">
+                                    <span class="indicator-key"><span class="key-dot" style="background: var(--indicator-ema18);"></span>EMA 18</span>
+                                    <span class="indicator-key"><span class="key-dot" style="background: var(--indicator-ema50);"></span>EMA 50</span>
+                                </div>
+                            </div>
+                            <div id="chartContainer"></div>
+                        </section>
+
+                    </div>
+
+                    <!-- Column 3: Analysis -->
+                    <div class="col-analysis">
+                        <aside class="sidebar-panel">
+                            <div class="sidebar-section">
+                                <div class="section-label">Direction &amp; probability</div>
+                                <div class="verdict-row">
+                                    <div id="verdictDirection" class="verdict-signal neutral">Processing...</div>
+                                    <div class="verdict-probability mono">
+                                        <span id="verdictScore">--%</span>
+                                        <span class="verdict-probability-sub">probability</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="sidebar-section">
+                                <div class="section-label">Targets &amp; risk limits</div>
+                                <div class="levels-list">
+                                    <div class="level-row">
+                                        <span class="level-name">Point of Interest (POI)</span>
+                                        <span id="valPoi" class="level-num mono">Rp --</span>
+                                    </div>
+                                    <div class="level-row">
+                                        <span class="level-name">Invalidation limit (Cut loss)</span>
+                                        <span id="valInvalidation" class="level-num mono" style="color: var(--bear);">Rp --</span>
+                                    </div>
+                                    <div class="level-row">
+                                        <span class="level-name">Target take profit 1 (1:2 R:R)</span>
+                                        <span id="valTp1" class="level-num mono" style="color: var(--bull);">Rp --</span>
+                                    </div>
+                                    <div class="level-row">
+                                        <span class="level-name">Target take profit 2 (1:3 R:R)</span>
+                                        <span id="valTp2" class="level-num mono" style="color: var(--bull);">Rp --</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="sidebar-section">
+                                <div class="section-label">Confluence composition</div>
+                                <div class="pillars-list">
+                                    <div class="pillar-item">
+                                        <div class="pillar-header">
+                                            <span class="pillar-title">Trend &amp; structure (40%)</span>
+                                            <span id="scoreTrend" class="pillar-percent mono">--%</span>
+                                        </div>
+                                        <div class="subtle-track">
+                                            <div id="barTrend" class="subtle-fill" style="width: 0%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="pillar-item">
+                                        <div class="pillar-header">
+                                            <span class="pillar-title">Key levels &amp; SND (30%)</span>
+                                            <span id="scoreSnd" class="pillar-percent mono">--%</span>
+                                        </div>
+                                        <div class="subtle-track">
+                                            <div id="barSnd" class="subtle-fill" style="width: 0%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="pillar-item">
+                                        <div class="pillar-header">
+                                            <span class="pillar-title">Macro sentiment (30%)</span>
+                                            <span id="scoreMacro" class="pillar-percent mono">--%</span>
+                                        </div>
+                                        <div class="subtle-track">
+                                            <div id="barMacro" class="subtle-fill" style="width: 0%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </aside>
+                    </div>
+
+                    <!-- Row 2, Column 2 to 3: Dossier -->
+                    <section class="dossier-section" style="grid-column: 2 / -1;">
+                        <div class="dossier-heading">Machine Analysis</div>
+                        <div class="dossier-cols-grid">
+                            <div class="dossier-col-item">
+                                <span class="col-header">Historical context</span>
+                                <p id="dossierMemory" class="col-narrative">Loading historical pattern correlation...</p>
+                            </div>
+                            <div class="dossier-col-item">
+                                <span class="col-header">Trend structure</span>
+                                <p id="dossierTech" class="col-narrative">Analyzing EMA movement and market structure...</p>
+                            </div>
+                            <div class="dossier-col-item">
+                                <span class="col-header">Sentiment &amp; macro</span>
+                                <p id="dossierMacro" class="col-narrative">Evaluating global market sentiment...</p>
+                            </div>
+                            <div class="dossier-col-item">
+                                <span class="col-header">Setup probability</span>
+                                <p id="dossierConfluence" class="col-narrative">Calculating confluence weighting...</p>
+                            </div>
+                            <div class="dossier-col-item">
+                                <span class="col-header">Execution bounds</span>
+                                <p id="dossierRisk" class="col-narrative">Setting monitoring areas and risk limits...</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <footer class="terminal-footer">
+                    <span>&copy; 2026 reyjinn-IT. All rights reserved.</span>
+                </footer>
+            </main>
         </div>
-
-        <div class="top-metrics-group">
-            <div class="metric-cell">
-                <span class="metric-caption">Harga terkini</span>
-                <span id="topLastPrice" class="metric-hero mono">Rp --</span>
-            </div>
-            <div class="metric-cell">
-                <span class="metric-caption">Tertinggi 24j</span>
-                <span id="topHigh" class="metric-figure mono">Rp --</span>
-            </div>
-            <div class="metric-cell">
-                <span class="metric-caption">Terendah 24j</span>
-                <span id="topLow" class="metric-figure mono">Rp --</span>
-            </div>
-            <div class="metric-cell">
-                <span class="metric-caption">Volume 24j</span>
-                <span id="topVolIdr" class="metric-figure mono">Rp --</span>
-            </div>
-            <button id="btnSync" class="btn-action">Perbarui analisis</button>
-        </div>
-    </header>
-
-    <main class="main-wrapper">
-        <div class="workspace-grid">
-            <section class="chart-section">
-                <div class="chart-header">
-                    <div class="tf-switcher">
-                        <button class="tf-item" data-tf="15m">15m</button>
-                        <button class="tf-item active" data-tf="1h">1h</button>
-                        <button class="tf-item" data-tf="4h">4h</button>
-                        <button class="tf-item" data-tf="1d">1d</button>
-                    </div>
-                    <div class="chart-legend-minimal">
-                        <span class="indicator-key"><span class="key-dot" style="background: var(--indicator-ema18);"></span>EMA 18</span>
-                        <span class="indicator-key"><span class="key-dot" style="background: var(--indicator-ema50);"></span>EMA 50</span>
-                    </div>
-                </div>
-                <div id="chartContainer"></div>
-            </section>
-
-            <aside class="sidebar-panel">
-                <div class="sidebar-section">
-                    <div class="section-label">Arah &amp; probabilitas</div>
-                    <div class="verdict-row">
-                        <div id="verdictDirection" class="verdict-signal neutral">Memproses...</div>
-                        <div class="verdict-probability mono">
-                            <span id="verdictScore">--%</span>
-                            <span class="verdict-probability-sub">probabilitas</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="sidebar-section">
-                    <div class="section-label">Target &amp; batas risiko</div>
-                    <div class="levels-list">
-                        <div class="level-row">
-                            <span class="level-name">Point of Interest (POI)</span>
-                            <span id="valPoi" class="level-num mono">Rp --</span>
-                        </div>
-                        <div class="level-row">
-                            <span class="level-name">Batas invalidasi (Cut loss)</span>
-                            <span id="valInvalidation" class="level-num mono" style="color: var(--bear);">Rp --</span>
-                        </div>
-                        <div class="level-row">
-                            <span class="level-name">Target take profit 1 (1:2 R:R)</span>
-                            <span id="valTp1" class="level-num mono" style="color: var(--bull);">Rp --</span>
-                        </div>
-                        <div class="level-row">
-                            <span class="level-name">Target take profit 2 (1:3 R:R)</span>
-                            <span id="valTp2" class="level-num mono" style="color: var(--bull);">Rp --</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="sidebar-section">
-                    <div class="section-label">Komposisi konfluensi</div>
-                    <div class="pillars-list">
-                        <div class="pillar-item">
-                            <div class="pillar-header">
-                                <span class="pillar-title">Tren &amp; struktur (40%)</span>
-                                <span id="scoreTrend" class="pillar-percent mono">--%</span>
-                            </div>
-                            <div class="subtle-track">
-                                <div id="barTrend" class="subtle-fill" style="width: 0%;"></div>
-                            </div>
-                        </div>
-
-                        <div class="pillar-item">
-                            <div class="pillar-header">
-                                <span class="pillar-title">Level kunci &amp; SND (30%)</span>
-                                <span id="scoreSnd" class="pillar-percent mono">--%</span>
-                            </div>
-                            <div class="subtle-track">
-                                <div id="barSnd" class="subtle-fill" style="width: 0%;"></div>
-                            </div>
-                        </div>
-
-                        <div class="pillar-item">
-                            <div class="pillar-header">
-                                <span class="pillar-title">Sentimen makro (30%)</span>
-                                <span id="scoreMacro" class="pillar-percent mono">--%</span>
-                            </div>
-                            <div class="subtle-track">
-                                <div id="barMacro" class="subtle-fill" style="width: 0%;"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </aside>
-        </div>
-
-        <section class="dossier-section">
-            <div class="dossier-heading">Ringkasan analisis pasar</div>
-            <div class="dossier-cols-grid">
-                <div class="dossier-col-item">
-                    <span class="col-header">Konteks historis</span>
-                    <p id="dossierMemory" class="col-narrative">Memuat korelasi pola historis...</p>
-                </div>
-                <div class="dossier-col-item">
-                    <span class="col-header">Struktur tren</span>
-                    <p id="dossierTech" class="col-narrative">Menganalisis pergerakan EMA dan struktur pasar...</p>
-                </div>
-                <div class="dossier-col-item">
-                    <span class="col-header">Sentimen &amp; makro</span>
-                    <p id="dossierMacro" class="col-narrative">Mengevaluasi sentimen pasar global...</p>
-                </div>
-                <div class="dossier-col-item">
-                    <span class="col-header">Probabilitas setup</span>
-                    <p id="dossierConfluence" class="col-narrative">Mengalkulasi pembobotan konfluensi...</p>
-                </div>
-                <div class="dossier-col-item">
-                    <span class="col-header">Batas eksekusi</span>
-                    <p id="dossierRisk" class="col-narrative">Menetapkan area pemantauan dan batas risiko...</p>
-                </div>
-            </div>
-        </section>
-
-        <footer class="terminal-footer">
-            <span>&copy; 2026 reyjinn-IT. All rights reserved.</span>
-        </footer>
-    </main>
+    </div>
 
     <script src="/static/app.js"></script>
 </body>

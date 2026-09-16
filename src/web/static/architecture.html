@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Intellegence | Architecture</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/landing.css">
+    <style>
+        .page-content { max-width: 1200px; margin: 4rem auto; padding: 0 2rem; }
+        .page-title { font-size: 2.5rem; margin-bottom: 2rem; font-weight: 500; letter-spacing: -1px; border-bottom: 1px solid var(--border-solid); padding-bottom: 1rem; }
+        .back-link { font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-dim); margin-bottom: 2rem; display: inline-block; }
+        .back-link:hover { color: var(--text-primary); }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="brand">
+                <a href="/"><span class="brand-text">Trading Intellegence</span></a>
+            </div>
+            <nav class="nav-links">
+                <a href="/architecture">Architecture</a>
+                <a href="/metrics">Metrics</a>
+                <a href="/security">Risk Controls</a>
+            </nav>
+            <div class="nav-actions">
+                <a href="/terminal" class="btn btn-primary" hidden>INITIATE TERMINAL</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="page-content">
+        <a href="/" class="back-link">&larr; RETURN TO HOME</a>
+        <h1 class="page-title">SYSTEM ARCHITECTURE</h1>
+        
+        <div class="feature-table reveal">
+            <div class="feature-row">
+                <div class="f-col-1">01. CONFLUENCE ENGINE</div>
+                <div class="f-col-2" style="font-weight:600; color:var(--text-primary);">40/30/30 Model</div>
+                <div class="f-col-3">
+                    <p style="margin-bottom:1rem; color:var(--text-dim); line-height:1.6;">The algorithmic core operates on a strict 40/30/30 scoring model to eliminate subjective human bias. A trade signal is only generated if the aggregate Confluence Score surpasses the internal threshold <code>(MIN_CONFLUENCE_SCORE > 0.65)</code>.</p>
+                    <ul style="color:var(--text-dim); padding-left:1.5rem; line-height:1.6; margin-bottom:1rem;">
+                        <li><strong>40% Market Structure:</strong> Evaluates EMA 18/50/200 alignment, Break of Structure (BOS) shifts, and MACD momentum vectors.</li>
+                        <li><strong>30% Supply & Demand:</strong> Calculates proximity to Point of Interest (POI) zones, liquidity voids, and premium/discount arrays.</li>
+                        <li><strong>30% Macro Sentiment:</strong> Ingests external data like the Crypto Fear & Greed Index and global volume deltas.</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="feature-row reveal" style="margin-top: 1rem;">
+                <div class="f-col-1">02. MACHINE LEARNING</div>
+                <div class="f-col-2" style="font-weight:600; color:var(--text-primary);">Pattern Aggregation</div>
+                <div class="f-col-3">
+                    <p style="margin-bottom:1rem; color:var(--text-dim); line-height:1.6;">We abandon static indicators in favor of <strong>In-Context Pattern Learning</strong>. The engine processes a 1,440-bar historical vector upon every tick to identify structurally identical setups from the past.</p>
+                    <p style="color:var(--text-dim); line-height:1.6;">This empirical probability model computes exact target levels based on actual historical behavior rather than arbitrary R:R ratios.</p>
+                </div>
+            </div>
+            
+            <div class="feature-row reveal" style="margin-top: 1rem;">
+                <div class="f-col-1">03. DATA ROUTING</div>
+                <div class="f-col-2" style="font-weight:600; color:var(--text-primary);">Multi-Pair Engine</div>
+                <div class="f-col-3">
+                    <p style="color:var(--text-dim); line-height:1.6;">Simultaneous connection to Indodax APIs handles real-time fiat and stablecoin conversions. Our latency optimized router can seamlessly switch between <code>BTC/IDR</code> and <code>BTC/USDT</code> without reloading the runtime state.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer" style="position: relative; margin-top: 4rem;">
+        <div class="footer-layout">
+            <div class="copyright">&copy; 2026 reyjinn-IT. System built for quantitative research.</div>
+        </div>
+    </footer>
+    
+    <script>
+        const reveals = document.querySelectorAll(".reveal");
+        const revealOnScroll = () => {
+            const windowHeight = window.innerHeight;
+            reveals.forEach(rev => {
+                if (rev.getBoundingClientRect().top < windowHeight - 50) {
+                    rev.classList.add("active");
+                }
+            });
+        };
+        window.addEventListener("scroll", revealOnScroll);
+        revealOnScroll();
+    </script>
+</body>
+</html>

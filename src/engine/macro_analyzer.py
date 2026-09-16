@@ -45,21 +45,21 @@ class MacroAnalyzer:
         if "XAU" in asset_type.upper() or "GOLD" in asset_type.upper():
             # Macro drivers for Gold (XAUUSD): Geopolitics, Real Yields, Central Bank Reserves
             macro_score = 78.0
-            catalyst = "Permintaan Safe-Haven geopolitik tinggi & akumulasi cadangan devisa oleh Bank Sentral global."
-            impact = "Mendukung tren bullish jangka menengah XAUUSD di atas level support psikologis."
+            catalyst = "High geopolitical safe-haven demand & global Central Bank FX reserve accumulation."
+            impact = "Supports medium-term bullish trend of XAUUSD above psychological support levels."
             summary = (
-                f"Katalis Makro Emas: {catalyst} | Dampak: {impact} | "
-                f"Sentimen Komoditas: Bullish Defensif (Indeks Sentimen: {macro_score:.1f}/100)"
+                f"Gold Macro Catalyst: {catalyst} | Impact: {impact} | "
+                f"Commodity Sentiment: Defensive Bullish (Sentiment Index: {macro_score:.1f}/100)"
             )
         else:
             # Macro drivers for Crypto (BTC/IDR): Global Liquidity, ETF Flows, Fear & Greed
             # Normalize F&G into score (30 to 85)
             macro_score = 25.0 + (fng_value * 0.65)
-            catalyst = f"Indeks Sentimen Pasar (Fear & Greed) berada di angka {fng_value} ({fng_class}). Arus modal ETF netral-positif."
-            impact = "Kondisi likuiditas mendukung akumulasi aset berisiko dengan volatilitas moderat."
+            catalyst = f"Market Sentiment Index (Fear & Greed) is at {fng_value} ({fng_class}). ETF flows are neutral-positive."
+            impact = "Liquidity conditions support risk asset accumulation with moderate volatility."
             summary = (
-                f"Katalis Makro Kripto: {catalyst} | Dampak: {impact} | "
-                f"Skor Fundamental: {macro_score:.1f}/100"
+                f"Crypto Macro Catalyst: {catalyst} | Impact: {impact} | "
+                f"Fundamental Score: {macro_score:.1f}/100"
             )
 
         macro_score = max(5.0, min(95.0, macro_score))

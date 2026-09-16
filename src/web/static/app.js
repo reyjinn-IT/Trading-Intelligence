@@ -20,7 +20,7 @@ function formatPrice(price) {
     if (isUsdt()) {
         return `$ ${p.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     }
-    return `Rp ${parseInt(p).toLocaleString('id-ID')}`;
+    return `Rp ${parseInt(p).toLocaleString('en-US')}`;
 }
 
 function formatVolume(vol) {
@@ -31,14 +31,17 @@ function formatVolume(vol) {
         return `$ ${v.toFixed(2)}`;
     }
     const volMiliar = (v / 1e9).toFixed(2);
-    return `Rp ${volMiliar} Miliar`;
+    return `Rp ${volMiliar} Billion`;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
     initChart();
     setupEventListeners();
     loadAllData();
-    setInterval(fetchTicker, 5000);
+    setInterval(() => {
+        fetchTicker();
+        fetchOrderBookData();
+    }, 5000);
 });
 
 function initChart() {
@@ -158,11 +161,69 @@ function setupEventListeners() {
             loadKlinesAndEvaluation();
         });
     });
+
+    // Sidebar Toggle
+    const sidebarToggle = document.getElementById("sidebarToggle");
+    const sidebarClose = document.getElementById("sidebarClose");
+    
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener("click", () => {
+            document.querySelector(".app-layout").classList.toggle("sidebar-open");
+        });
+    }
+    
+    if (sidebarClose) {
+        sidebarClose.addEventListener("click", () => {
+            document.querySelector(".app-layout").classList.remove("sidebar-open");
+        });
+    }
+}
+
+let lastTrades = [];
+
+async function fetchOrderBookData() {
+    try {
+        const tradesRes = await fetch(`/api/trades?pair=${currentPair}`);
+        if (tradesRes.ok) lastTrades = await tradesRes.json();
+        renderObContent();
+    } catch (e) {
+        console.warn("Trades fetch error:", e);
+    }
+}
+
+function formatTime(timestamp) {
+    const d = new Date(timestamp * 1000);
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const yyyy = d.getFullYear();
+    const hh = String(d.getHours()).padStart(2, '0');
+    const min = String(d.getMinutes()).padStart(2, '0');
+    return `${dd}-${mm}-${yyyy} ${hh}:${min}`;
+}
+
+function renderObContent() {
+    const obContent = document.getElementById("obContent");
+    if (!obContent) return;
+    obContent.innerHTML = "";
+
+    (lastTrades || []).slice(0, 30).forEach(trade => {
+        const isBuy = trade.type === "buy";
+        const color = isBuy ? "var(--bull)" : "var(--bear)";
+        const div = document.createElement("div");
+        div.className = "ob-row";
+        div.innerHTML = `
+            <span class="ob-price" style="color: ${color};">${formatPrice(trade.price)}</span>
+            <span class="ob-amount">${trade.amount}</span>
+            <span class="ob-time">${formatTime(trade.date)}</span>
+        `;
+        obContent.appendChild(div);
+    });
 }
 
 async function loadAllData() {
     await Promise.all([
         fetchTicker(),
+        fetchOrderBookData(),
         loadKlinesAndEvaluation()
     ]);
 }
@@ -296,14 +357,14 @@ function renderEvaluation(data) {
     const vDir = document.getElementById("verdictDirection");
     const vScore = document.getElementById("verdictScore");
 
-    let text = "Netral (Konsolidasi)";
+    let text = "Neutral (Consolidation)";
     let cls = "neutral";
 
     if (action === "BUY") {
-        text = "Bullish (Akumulasi)";
+        text = "Bullish (Accumulation)";
         cls = "bull";
     } else if (action === "SELL") {
-        text = "Bearish (Distribusi)";
+        text = "Bearish (Distribution)";
         cls = "bear";
     }
 

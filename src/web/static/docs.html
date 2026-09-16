@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Intellegence | Official Documentation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/landing.css">
+    <style>
+        body { display: flex; flex-direction: column; min-height: 100vh; }
+        .docs-container { display: flex; flex: 1; max-width: 1600px; margin: 0 auto; width: 100%; border-left: 1px solid var(--border-dim); border-right: 1px solid var(--border-dim); }
+        
+        /* Sidebar */
+        .docs-sidebar { width: 280px; background: var(--bg-surface); border-right: 1px solid var(--border-solid); padding: 2rem 0; flex-shrink: 0; position: sticky; top: 65px; height: calc(100vh - 65px); overflow-y: auto; }
+        .sidebar-section { margin-bottom: 2rem; }
+        .sidebar-title { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; padding: 0 2rem; margin-bottom: 0.75rem; }
+        .sidebar-nav { display: flex; flex-direction: column; }
+        .sidebar-link { padding: 0.5rem 2rem; color: var(--text-primary); text-decoration: none; font-size: 0.9rem; transition: background 0.15s, color 0.15s; border-left: 2px solid transparent; }
+        .sidebar-link:hover, .sidebar-link.active { background: var(--bg-surface-h); border-left-color: var(--text-primary); }
+        .sidebar-link.active { font-weight: 500; }
+
+        /* Main Content */
+        .docs-main { flex: 1; padding: 4rem 5rem; background: var(--bg-main); overflow-y: auto; }
+        .back-link { font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-dim); margin-bottom: 2rem; display: inline-block; }
+        .back-link:hover { color: var(--text-primary); }
+        
+        .docs-content { max-width: 800px; color: var(--text-dim); font-size: 0.95rem; line-height: 1.7; }
+        .docs-content h1 { color: var(--text-primary); font-size: 2.5rem; font-weight: 500; letter-spacing: -1px; margin-bottom: 1.5rem; }
+        .docs-content h2 { color: var(--text-primary); font-size: 1.5rem; font-weight: 500; margin-top: 3.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-solid); }
+        .docs-content h3 { color: var(--text-primary); font-size: 1.1rem; font-weight: 500; font-family: var(--font-mono); margin-top: 2.5rem; margin-bottom: 1rem; }
+        .docs-content p { margin-bottom: 1.5rem; }
+        .docs-content ul, .docs-content ol { margin-bottom: 1.5rem; padding-left: 1.5rem; }
+        .docs-content li { margin-bottom: 0.5rem; }
+        
+        .docs-content code { font-family: var(--font-mono); background: rgba(255,255,255,0.05); padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.85em; color: var(--text-primary); }
+        .docs-content pre { background: var(--bg-surface-h); border: 1px solid var(--border-solid); padding: 1.25rem; border-radius: 4px; overflow-x: auto; margin-bottom: 1.5rem; }
+        .docs-content pre code { background: none; padding: 0; color: var(--text-dim); }
+        
+        .alert { padding: 1rem 1.5rem; border-left: 4px solid; background: var(--bg-surface); margin: 1.5rem 0; }
+        .alert-info { border-color: #38BDF8; }
+        .alert-warn { border-color: var(--trade-neutral); }
+        .alert-danger { border-color: var(--trade-bear); }
+
+        .param-table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; font-size: 0.9rem; }
+        .param-table th, .param-table td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border-solid); text-align: left; }
+        .param-table th { font-family: var(--font-mono); font-weight: 500; color: var(--text-primary); background: var(--bg-surface); }
+        
+        @media (max-width: 1024px) {
+            .docs-container { flex-direction: column; }
+            .docs-sidebar { width: 100%; height: auto; position: relative; border-right: none; border-bottom: 1px solid var(--border-solid); padding: 1rem 0; }
+            .docs-main { padding: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="brand">
+                <span class="brand-text">Trading Intellegence</span>
+            </div>
+            <nav class="nav-links">
+                <a href="/architecture">Architecture</a>
+                <a href="/metrics">Metrics</a>
+                <a href="/security">Risk Controls</a>
+            </nav>
+            <div class="nav-actions">
+                <a href="/terminal" class="btn btn-primary" hidden>INITIATE TERMINAL</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="docs-container">
+        <aside class="docs-sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Start Here</div>
+                <nav class="sidebar-nav">
+                    <a href="#introduction" class="sidebar-link active">Introduction (What is this?)</a>
+                    <a href="#quickstart" class="sidebar-link">How to Run</a>
+                </nav>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">How the System Works</div>
+                <nav class="sidebar-nav">
+                    <a href="#confluence" class="sidebar-link">3 Pillars of Analysis (System Brain)</a>
+                    <a href="#pattern" class="sidebar-link">Learning from History</a>
+                    <a href="#risk" class="sidebar-link">Seatbelt (Security)</a>
+                </nav>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-title">Advanced</div>
+                <nav class="sidebar-nav">
+                    <a href="#api" class="sidebar-link">API Usage</a>
+                </nav>
+            </div>
+        </aside>
+
+        <main class="docs-main">
+            <a href="/" class="back-link">&larr; RETURN TO HOME</a>
+            
+            <div class="docs-content">
+                <h1 id="introduction">Trading Intellegence Handbook</h1>
+                <p>Welcome! This guide is designed to be easily understood, even if you are new to the world of trading or programming. <strong>Trading Intellegence</strong> is essentially a "Smart Assistant" that helps you analyze Bitcoin (BTC) price movements.</p>
+                <p>Instead of manually guessing the market direction (which is often influenced by emotion or fear), this system uses strict mathematical rules to tell you exactly when to buy or sell.</p>
+
+                <div class="alert alert-warn">
+                    <strong>Important Warning:</strong> This system is a tool (assistant), not a guarantee of profit. All risks of loss when you decide to trade with real money are entirely yours. Always start with simulation mode!
+                </div>
+
+                <h2 id="quickstart">How to Run the System</h2>
+                <p>This system runs locally on your own computer. You only need internet access so the system can pull the latest price data from Indodax.</p>
+                
+                <h3>Steps:</h3>
+                <p>Open Terminal (or Command Prompt) on your computer, then type these commands sequentially:</p>
+                <pre><code># 1. Download or ensure you are in the application folder
+cd TRADING
+
+# 2. Activate the virtual environment
+# On Windows:
+.\venv\Scripts\Activate.ps1
+
+# 3. Start the system
+python main.py --server</code></pre>
+                <p>After that, open your internet browser and go to: <strong><code>http://localhost:8000/terminal</code></strong> to view your smart assistant!</p>
+
+                <h2 id="confluence">How the System Thinks (3 Pillars of Analysis)</h2>
+                <p>When the system looks at a chart, it doesn't just guess. It gives an "exam score" on a scale from 0 to 1. If the score is good enough (above a predetermined threshold), it suggests trading. It looks at these 3 things:</p>
+                
+                <table class="param-table">
+                    <thead>
+                        <tr>
+                            <th>Weight</th>
+                            <th>Pillar Name</th>
+                            <th>Simple Explanation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>40%</td>
+                            <td>Market Structure</td>
+                            <td>Is the price overall going up or down? Like swimming, it's much easier to swim with the current.</td>
+                        </tr>
+                        <tr>
+                            <td>30%</td>
+                            <td>Supply &amp; Demand</td>
+                            <td>Finding out whether the current price is "overpriced" or at a "discount". We always want to buy when there is a massive discount.</td>
+                        </tr>
+                        <tr>
+                            <td>30%</td>
+                            <td>Macro Sentiment</td>
+                            <td>Checking whether people out there are greedy (wanting to buy everything) or fearful.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2 id="pattern">Learning From History (Historical Patterns)</h2>
+                <p>Humans often make repeated mistakes, and so does the financial market. This system is equipped with a <strong>Historical Memory</strong> feature.</p>
+                <ul>
+                    <li>Every second, it compares today's chart shape with charts from several years ago.</li>
+                    <li>If the shape is similar to a past pattern that generated profit, it will use that data to predict today's price. This is exactly like seeing dark clouds to predict that it will rain soon.</li>
+                </ul>
+
+                <h2 id="risk">Seatbelt (Protecting Your Money)</h2>
+                <p>In trading, the most important thing is not how big your profits are, but how smart you are in protecting your capital from depletion.</p>
+                <h3>Emergency Brake (Deadman Switch)</h3>
+                <p>The system has a sort of heartbeat sensor. If your computer suddenly loses power, or the internet drops, the system will immediately scream to the exchange (Indodax) to CANCEL all your pending orders, so your money remains safe.</p>
+                <h3>Smart Cut Loss</h3>
+                <p>The system automatically calculates when it should "give up" if its guess is wrong. It will immediately sell your coins with a minor loss (maximum 2%) before the loss gets bigger and drains your funds.</p>
+
+                <h2 id="api">For Advanced Users (API)</h2>
+                <p>If you are a programmer who wants to connect this system with other applications (for example, making a Telegram bot), you can use these endpoints:</p>
+                <table class="param-table">
+                    <thead>
+                        <tr>
+                            <th>Endpoint</th>
+                            <th>Usage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>/api/ticker?pair=btc_idr</code></td>
+                            <td>Gets the latest real-time Bitcoin price.</td>
+                        </tr>
+                        <tr>
+                            <td><code>/api/evaluate?pair=btc_idr</code></td>
+                            <td>Commands the assistant to analyze and provide trading advice immediately.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <br><br><br>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Simple active link highlighting on scroll
+        const sections = document.querySelectorAll('h2[id], h1[id]');
+        const navLinks = document.querySelectorAll('.sidebar-link');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${entry.target.id}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, { rootMargin: '-10% 0px -80% 0px' });
+
+        sections.forEach(section => observer.observe(section));
+    </script>
+</body>
+</html>

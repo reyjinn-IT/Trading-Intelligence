@@ -109,6 +109,30 @@ class IndodaxClient:
             "source": "Cached Fallback"
         }
 
+    def get_depth(self, pair: str = "btc_idr") -> Dict[str, Any]:
+        norm_pair = self._normalize_pair(pair)
+        url = f"{self.rest_url}/depth/{norm_pair}"
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+        try:
+            resp = requests.get(url, headers=headers, timeout=8)
+            if resp.status_code == 200:
+                return resp.json()
+        except Exception as e:
+            logger.warning("Indodax depth fetch failed: %s", e)
+        return {"buy": [], "sell": []}
+
+    def get_trades(self, pair: str = "btc_idr") -> List[Dict[str, Any]]:
+        norm_pair = self._normalize_pair(pair)
+        url = f"{self.rest_url}/trades/{norm_pair}"
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+        try:
+            resp = requests.get(url, headers=headers, timeout=8)
+            if resp.status_code == 200:
+                return resp.json()
+        except Exception as e:
+            logger.warning("Indodax trades fetch failed: %s", e)
+        return []
+
     def get_klines(self, pair: str = "btc_idr", timeframe: str = "1h", limit: int = 100) -> List[Dict[str, Any]]:
         symbol = self._normalize_pair(pair).upper()
         # Map timeframe to Indodax TV format: (param, bar_seconds, total_historical_window_seconds)

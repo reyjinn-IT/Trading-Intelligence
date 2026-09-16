@@ -139,7 +139,7 @@ class InContextMemory:
                 "winrate": 72.0,
                 "occurrences": 0,
                 "avg_rr": 2.2,
-                "summary": "Data candlestick terbatas untuk pembelajaran empiris."
+                "summary": "Limited candlestick data for empirical learning."
             }
 
         df = pd.DataFrame(candles)
@@ -240,9 +240,9 @@ class InContextMemory:
             "avg_rr": avg_rr,
             "avg_bars_to_tp": avg_bars,
             "summary": (
-                f"Pola '{setup_name}' teridentifikasi ({total_setups} sampel pada riwayat data). "
-                f"Ekspektasi win rate historis {winrate}% dengan rata-rata R:R {avg_rr}:1 "
-                f"dan estimasi durasi {avg_bars} bar menuju target."
+                f"Pattern '{setup_name}' identified ({total_setups} samples in historical data). "
+                f"Historical win rate expectation {winrate}% with average R:R {avg_rr}:1 "
+                f"and estimated duration of {avg_bars} bars to target."
             )
         }
 
@@ -290,19 +290,19 @@ class InContextMemory:
         if tech_learning.get("learned"):
             summary = (
                 f"{tech_learning['summary']} "
-                f"Tingkat konfirmasi empiris: {tech_learning['winrate']}%."
+                f"Empirical confirmation rate: {tech_learning['winrate']}%."
             )
             correlation_pct = tech_learning["winrate"]
         elif best_match:
             correlation_pct = min(96.0, best_score + 4.0)
             summary = (
-                f"Korelasi {correlation_pct:.1f}% dengan setup '{best_match.get('id')} - {best_match.get('event_type')}'. "
-                f"Pola '{best_match.get('pattern')}' memiliki catatan {best_match.get('outcome')} "
-                f"(R:R {best_match.get('rr_achieved')}) dengan key takeaway: {best_match.get('key_takeaway')}"
+                f"Correlation {correlation_pct:.1f}% with setup '{best_match.get('id')} - {best_match.get('event_type')}'. "
+                f"Pattern '{best_match.get('pattern')}' has record {best_match.get('outcome')} "
+                f"(R:R {best_match.get('rr_achieved')}) with key takeaway: {best_match.get('key_takeaway')}"
             )
         else:
             correlation_pct = 75.0
-            summary = "Struktur tren saat ini konsisten dengan baseline akumulasi historis (probabilitas 75.0%)."
+            summary = "Current trend structure is consistent with historical accumulation baseline (probability 75.0%)."
 
         return {
             "matched": True,

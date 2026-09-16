@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Intellegence | Risk Controls</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/landing.css">
+    <style>
+        .page-content { max-width: 1200px; margin: 4rem auto; padding: 0 2rem; }
+        .page-title { font-size: 2.5rem; margin-bottom: 2rem; font-weight: 500; letter-spacing: -1px; border-bottom: 1px solid var(--border-solid); padding-bottom: 1rem; }
+        .back-link { font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-dim); margin-bottom: 2rem; display: inline-block; }
+        .back-link:hover { color: var(--text-primary); }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="brand">
+                <span class="brand-text">Trading Intellegence</span>
+            </div>
+            <nav class="nav-links">
+                <a href="/architecture">Architecture</a>
+                <a href="/metrics">Metrics</a>
+                <a href="/security">Risk Controls</a>
+            </nav>
+            <div class="nav-actions">
+                <a href="/terminal" class="btn btn-primary" hidden>INITIATE TERMINAL</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="page-content">
+        <a href="/" class="back-link">&larr; RETURN TO HOME</a>
+        <h1 class="page-title">RISK CONTROLS</h1>
+        
+        <div class="feature-table reveal">
+            <div class="feature-row" id="security">
+                <div class="f-col-1">01. HARDWARE-LEVEL</div>
+                <div class="f-col-2" style="font-weight:600; color:var(--text-primary);">Deadman Switch</div>
+                <div class="f-col-3">
+                    <p style="margin-bottom:1rem; color:var(--text-dim); line-height:1.6;">A dedicated heartbeat daemon continually monitors the connection between the client UI and the engine API. It expects a ping every 30 seconds.</p>
+                    <p style="color:var(--text-dim); line-height:1.6;">If the application crashes, the browser window is closed abruptly, or the network connection drops, it automatically fires failsafe routines directly to the exchange to cancel all open limit/stop orders across active pairs.</p>
+                </div>
+            </div>
+            
+            <div class="feature-row reveal" style="margin-top: 1rem;">
+                <div class="f-col-1">02. ZERO RISK TESTING</div>
+                <div class="f-col-2" style="font-weight:600; color:var(--text-primary);">Paper Trading Mode</div>
+                <div class="f-col-3">
+                    <p style="margin-bottom:1rem; color:var(--text-dim); line-height:1.6;">The terminal strictly boots in simulation mode by default. All API orders are executed inside a local memory state, simulating exchange latency and orderbook depth.</p>
+                    <p style="color:var(--text-dim); line-height:1.6;">The <code>LIVE_TRADING</code> flag must be manually toggled to ensure algorithms operate identically in simulation as they will in production before risking capital.</p>
+                </div>
+            </div>
+            
+            <div class="feature-row reveal" style="margin-top: 1rem;">
+                <div class="f-col-1">03. DRAWDOWN CAPPING</div>
+                <div class="f-col-2" style="font-weight:600; color:var(--text-primary);">Dynamic Invalidation</div>
+                <div class="f-col-3">
+                    <p style="margin-bottom:1rem; color:var(--text-dim); line-height:1.6;">Stop losses are not calculated using arbitrary percentage drops. The terminal dynamically computes the exact point of structural invalidation based on prior swing structures and POI zones.</p>
+                    <p style="color:var(--text-dim); line-height:1.6;">If the invalidation point requires risking more than the internal 2% max-drawdown threshold, the trade setup is entirely rejected regardless of confluence score.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer" style="position: relative; margin-top: 4rem;">
+        <div class="footer-layout">
+            <div class="copyright">&copy; 2026 reyjinn-IT. System built for quantitative research.</div>
+        </div>
+    </footer>
+    
+    <script>
+        const reveals = document.querySelectorAll(".reveal");
+        const revealOnScroll = () => {
+            const windowHeight = window.innerHeight;
+            reveals.forEach(rev => {
+                if (rev.getBoundingClientRect().top < windowHeight - 50) {
+                    rev.classList.add("active");
+                }
+            });
+        };
+        window.addEventListener("scroll", revealOnScroll);
+        revealOnScroll();
+    </script>
+</body>
+</html>

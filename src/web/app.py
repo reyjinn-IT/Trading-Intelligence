@@ -52,10 +52,37 @@ def startup_event():
 
 @app.get("/", response_class=HTMLResponse)
 def index():
-    html_file = STATIC_DIR / "index.html"
+    html_file = STATIC_DIR / "landing.html"
     if html_file.exists():
         return html_file.read_text(encoding="utf-8")
     return "<h1>AI Expert Trading Assistant API Active</h1><p>Visit /docs for API documentation.</p>"
+
+@app.get("/terminal", response_class=HTMLResponse)
+def terminal():
+    html_file = STATIC_DIR / "index.html"
+    if html_file.exists():
+        return html_file.read_text(encoding="utf-8")
+    return "<h1>Terminal Not Found</h1>"
+
+@app.get("/documentation", response_class=HTMLResponse)
+def documentation():
+    html_file = STATIC_DIR / "docs.html"
+    return html_file.read_text(encoding="utf-8") if html_file.exists() else "<h1>Documentation Not Found</h1>"
+
+@app.get("/architecture", response_class=HTMLResponse)
+def architecture():
+    html_file = STATIC_DIR / "architecture.html"
+    return html_file.read_text(encoding="utf-8") if html_file.exists() else "<h1>Architecture Not Found</h1>"
+
+@app.get("/metrics", response_class=HTMLResponse)
+def metrics():
+    html_file = STATIC_DIR / "metrics.html"
+    return html_file.read_text(encoding="utf-8") if html_file.exists() else "<h1>Metrics Not Found</h1>"
+
+@app.get("/security", response_class=HTMLResponse)
+def security():
+    html_file = STATIC_DIR / "security.html"
+    return html_file.read_text(encoding="utf-8") if html_file.exists() else "<h1>Security Not Found</h1>"
 
 @app.get("/api/status")
 def get_system_status():
