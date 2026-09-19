@@ -138,4 +138,4 @@ Perangkat lunak ini dikembangkan untuk keperluan riset analisis kuantitatif dan 
 
 ---
 
-&copy; 2026 reyjinn-IT. All rights reserved.
+&copy; 2026 reyjinnn. All rights reserved.
